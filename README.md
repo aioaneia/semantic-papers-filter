@@ -82,7 +82,11 @@ After processing the dataset of 11,450 papers, we obtained the following results
 
 ![Method Type Percentages](results/method_type_percentages.png)
 
-### Project Structure
+### Method Type Distribution Over Time
+
+![Method Types Over Time](results/method_types_over_time.png)
+
+## Project Structure
 ```
 semantic-virology-papers-filter/
 ├── src/
@@ -97,7 +101,8 @@ semantic-virology-papers-filter/
 └── requirements.txt            # Project dependencies
 ```
 
-### Project Structure
+### Project Structure Overview
+
 #### Data Loader (data_loader.py)
 - Loads the dataset from the CSV file.
 - Performs initial data validation and computes basic statistics (e.g., total records, records with abstracts).
@@ -130,3 +135,4 @@ semantic-virology-papers-filter/
 - Filtered Papers (nlp_filtered_papers.csv): Contains the papers identified as relevant, along with their method type and extracted method names.
 - Statistics (nlp_statistics.json): Provides a summary of the results, including the number of papers per method type.
 - Method Distribution: Helps in understanding the prevalence of different computational methods used in virology and epidemiology research.
+

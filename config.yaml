@@ -1,6 +1,6 @@
 
 # LLM Model IDs
-OLLAMA_MODEL_ID: "llama3.1:8b"
+OLLAMA_MODEL_ID: "llama3.2:3b" # 3B parameter model
 
-
+# Dataset paths for the collection
 DATASET_PATH: ../data/collection_with_abstracts.csv

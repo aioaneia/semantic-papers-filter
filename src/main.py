@@ -38,7 +38,7 @@ def main(process_by_nlp=True, process_by_llm=False):
 
     if process_by_nlp:
         # Process papers using NLP pipeline
-        pipeline.process_by_nlp(limit=20)
+        pipeline.process_by_nlp(limit=100)
 
         print("Saving results...")
 

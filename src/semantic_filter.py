@@ -6,7 +6,7 @@ import subprocess
 from typing      import Dict, Tuple, Set
 from collections import defaultdict
 
-from constants import Constants
+from src.constants import Constants
 
 
 class SemanticFilter:
@@ -23,7 +23,7 @@ class SemanticFilter:
         self.method_matchers = self.initialize_method_matchers()
 
 
-    def load_spacy_model(self, model_name: str = 'en_core_web_md') -> spacy.language.Language:
+    def load_spacy_model(self, model_name: str = 'en_core_web_lg') -> spacy.language.Language:
         """Load spaCy model with error handling."""
         try:
             return spacy.load(model_name)

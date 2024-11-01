@@ -60,6 +60,7 @@ class Pipeline:
                     'PMID':        row['PMID'],
                     'title':       row['Title'],
                     'abstract':    row['Abstract'],
+                    'year':        row['Publication Year'],
                     'method_type': method_type,
                     'method_name': method_name,
                 }
@@ -69,11 +70,11 @@ class Pipeline:
             print("=====================")
             print(f"Title:       {row['Title']}")
             print(f"Abstract:    {row['Abstract']}")
+            print(f'Year:        {row["Publication Year"]}')
             print(f"Is relevant: {is_relevant}")
             print(f"Scores:      {scores}")
             print(f"Method type: {method_type}")
             print(f"Method name: {method_name}")
-            print("")
             print("=====================")
 
         self.results = pd.DataFrame(results)
@@ -114,9 +115,10 @@ class Pipeline:
                     'PMID':        row['PMID'],
                     'title':       row['Title'],
                     'abstract':    row['Abstract'],
+                    'year':        pd.to_numeric(row['Publication Year'], errors='coerce').fillna(0).astype(int),
+                    'relevant':    result.relevant,
                     'method_type': result.method_type,
                     'method_name': result.method_name,
-                    'relevant':    result.relevant,
                     'reasoning':   result.reasoning
                 }
 
@@ -165,19 +167,36 @@ class Pipeline:
 
         # Method type distribution
         method_distribution = self.results['method_type'].value_counts()
-        method_percentages = (method_distribution / total_relevant_papers * 100).round(2).to_dict()
-        method_counts = method_distribution.to_dict()
+        method_percentages = (method_distribution / total_relevant_papers * 100).round(2)
+        method_counts = method_distribution
 
-        # Top method names
-        top_methods = self.results['method_name'].value_counts().head(10).to_dict()
+        # Convert keys to str and values to native types for JSON serialization
+        method_counts = {str(k): int(v) for k, v in method_counts.items()}
+        method_percentages = {str(k): float(v) for k, v in method_percentages.items()}
+
+        # Top method names overall
+        top_methods_overall = self.results['method_name'].value_counts().head(10)
+        top_methods_overall = {str(k): int(v) for k, v in top_methods_overall.items()}
+
+        # Top method names by year
+        top_methods_by_year = {}
+        years = self.results['year'].unique()
+        for year in sorted(years):
+            year_df = self.results[self.results['year'] == year]
+            top_methods = year_df['method_name'].value_counts().head(5)
+            # Convert method names and counts to native types
+            top_methods = {str(k): int(v) for k, v in top_methods.items()}
+            if top_methods:
+                top_methods_by_year[int(year)] = top_methods  # Convert year to int
 
         stats = {
-            'total_papers_processed': total_papers_processed,
-            'total_relevant_papers': total_relevant_papers,
-            'relevance_percentage': round((total_relevant_papers / total_papers_processed) * 100, 2),
+            'total_papers_processed': int(total_papers_processed),
+            'total_relevant_papers': int(total_relevant_papers),
+            'relevance_percentage': float(round((total_relevant_papers / total_papers_processed) * 100, 2)),
             'method_counts': method_counts,
             'method_percentages': method_percentages,
-            'top_method_names': top_methods,
+            'top_method_names_overall': top_methods_overall,
+            'top_method_names_by_year': top_methods_by_year,
         }
 
         return stats
@@ -196,6 +215,7 @@ class Pipeline:
         plt.ylabel('Number of Papers')
         plt.title('Distribution of Method Types')
         plt.savefig(f'{output_dir}/method_type_distribution.png')
+        plt.show()
         plt.close()
 
         # Pie chart for method percentages
@@ -209,6 +229,44 @@ class Pipeline:
         plt.savefig(f'{output_dir}/method_type_percentages.png')
         plt.close()
 
+        # Plot number of relevant papers per year
+        papers_per_year = self.results.groupby('year').size()
+
+        plt.figure(figsize=(10, 6))
+        papers_per_year.plot(kind='bar', color='skyblue')
+        plt.xlabel('Publication Year')
+        plt.ylabel('Number of Relevant Papers')
+        plt.title('Number of Relevant Papers per Year')
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/papers_per_year.png')
+        plt.close()
+
+        # Plot method type distribution over time
+        method_types_over_time = self.results.groupby(['year', 'method_type']).size().unstack(fill_value=0)
+        method_types_over_time.plot(kind='bar', stacked=True, figsize=(12, 7))
+        plt.xlabel('Publication Year')
+        plt.ylabel('Number of Papers')
+        plt.title('Method Type Distribution Over Time')
+        plt.legend(title='Method Type')
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/method_types_over_time.png')
+        plt.close()
+
+        plt.figure(figsize=(10, 6))
+        # Trend lines for top methods
+        for method_name in statistics['top_method_names_overall'].keys():
+            method_data = self.results[self.results['method_name'] == method_name]
+            papers_per_year = method_data.groupby('year').size()
+            plt.plot(papers_per_year.index, papers_per_year.values, marker='o', label=method_name)
+
+        plt.xlabel('Publication Year')
+        plt.ylabel('Number of Papers')
+        plt.title('Trend of Top Method Names Over Time')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/method_trends_over_time.png')
+        plt.close()
+
         # Print statistics
         print(f"Total papers processed: {statistics['total_papers_processed']}")
         print(f"Total relevant papers: {statistics['total_relevant_papers']}")
@@ -218,6 +276,9 @@ class Pipeline:
             percentage = method_percentages[method]
             print(f"- {method}: {count} papers ({percentage}%)")
 
-        print("\nTop Method Names Extracted:")
-        for method_name, count in statistics['top_method_names'].items():
-            print(f"- {method_name}: {count} occurrences")
+        # Print top method names by year
+        print("\nTop Method Names by Year:")
+        for year, methods in statistics['top_method_names_by_year'].items():
+            print(f"\nYear: {int(year)}")
+            for method_name, count in methods.items():
+                print(f"- {method_name}: {count} occurrences")

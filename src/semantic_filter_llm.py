@@ -10,7 +10,7 @@ from typing import Dict
 
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from langchain_community.chat_models import ChatOllama
+from langchain_ollama import ChatOllama
 
 
 @dataclass
