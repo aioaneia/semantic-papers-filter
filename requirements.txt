@@ -1,0 +1,19 @@
+
+# Core
+pandas~=2.2.3
+scikit-learn~=1.5.2
+
+# Natural Language Processing
+spacy~=3.8.2
+
+# Data Visualization
+#plotly~=5.23.0
+matplotlib~=3.9.2
+
+# Langchain
+langchain-core~=0.3.15
+langchain-community~=0.3.4
+
+# Environment variable management
+python-dotenv~=1.0.1
+PyYAML~=6.0.1

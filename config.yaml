@@ -1,0 +1,6 @@
+
+# LLM Model IDs
+OLLAMA_MODEL_ID: "llama3.1:8b"
+
+
+DATASET_PATH: ../data/collection_with_abstracts.csv
