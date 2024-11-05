@@ -1,0 +1,38 @@
+{
+  "total_relevant_papers": 65,
+  "total_papers_processed": 120,
+  "relevance_percentage": 54.17,
+  "method_counts": {
+    "computer vision": 45,
+    "both": 11,
+    "other": 8,
+    "text mining": 1
+  },
+  "method_percentages": {
+    "computer vision": 69.23,
+    "both": 16.92,
+    "other": 12.31,
+    "text mining": 1.54
+  },
+  "top_method_names_overall": {
+    "Not specified": 2,
+    "media shows, p shows, pathology approach, thickness study, wall extracted, media ratio, dl delineated, technique ratio, computer approach, intima ratio, images delineated, framework, vision delineated, analysis through, computer delineated, g ratio, p lt, e ratio, artery made, deep learning, wsis delineated, pathology delineated, computer shows, kidney approach, intima made, pathology through, testing delineated, wsis framework, slide delineated, numerical shows, intima shows, approach, e shows, kidney delineated, tau shows, 0 shows, sampling, pathomic made, 0 lt, learning delineated, dl shows, arteriosclerosis compared, ratio, measurement shows, pathomic shows, vision approach, analysis shows, thickness extracted, computer through, g shows, pathology shows, vision shows, dl framework, media delineated, dice shows, tau through, testing framework, vision through, pathology characterize, arteriosclerosis shows, technique shows, learning framework": 1,
+    "machine learning, registration raphia, networks raphia, raphia, deep learning, learning raphia": 1,
+    "deep-learning, validation, cross": 1,
+    "foundation model, vector improve, point placed, prompts, vector detect, ai detect, model for, pre-trained model, data detect, meta detect, resolution detect, text placed, anything detect, classification supervised, model detect, environments analyse, uav, point prompts, sensing analyse, resolution collect, source detect, source for, anything for, advances, models, control collect, disease analyse, resolution for, mosquito collect, surveillance improve, image placed, foundation detect, earth analyse, image models, ai for, meta for, foundation for, studies analyse, segmentation models": 1,
+    "predictions, data": 1,
+    "tumor generate, models, ultrasound of, cancer total, tumor region, ultrasound total, cancer models, appearance, features, frequency appearance, selection appearance, total, feature appearance, region, radiomic generate, hazards appearance, ultrasound features": 1,
+    "degeneration, deformity for, body accomplished, ct methods, fg methods, genant for, analysis, deformity autocorrelation, contour algorithm, intensity accomplished, ap algorithm, compression degeneration, autocorrelation, experts methods, contour analysis, chest accomplished, computation, intensity algorithm, fracture autocorrelation, fracture algorithm, ratio functions, tomography methods, intensity using, height features, deep learning, functions, fracture using, ratio using, likelihood delineation, fracture methods, fracture for, deformity methods, contour accomplished, ratio accomplished, height methods, intensity autocorrelation, height autocorrelation, delineation, artificial intelligence, ap analysis, fg learning, ap accomplished, fracture accomplished, experts autocorrelation, et for, experts features, intelligence, algorithm, ratio algorithm, learning, contour using, fracture analysis, features, lung to, ap using, likelihood accomplished, intensity methods": 1,
+    "liver classify, type extract, tomography from, hypertension classify, ct extract, hypertension extract, cardiometabolic conditions, disorders predict, deep learning imaging, mets classify, ii classify, 2 predict, syndrome predict, disease extract, ct predict, deep learning, idp, phenotype idp, syndrome classify, liver predict, ct from, cardiometabolic predict, disease classify, hypertension predict, type classify, learning approach, conditions, 1 classify, 2 extract, 1 extract, ii extract, phenotype study, liver extract, ii predict, tomography study, study, ct study, learning, mets extract, type predict, 1 predict, syndrome extract, mets predict, disease predict, learning predict": 1,
+    "participants model, model, risk model, data, biomarkers data, world model, oa model, cohort model, hip model, imaging optimise, prediction model": 1
+  },
+  "top_method_names_by_year": {
+    "2024": {
+      "Not specified": 2,
+      "media shows, p shows, pathology approach, thickness study, wall extracted, media ratio, dl delineated, technique ratio, computer approach, intima ratio, images delineated, framework, vision delineated, analysis through, computer delineated, g ratio, p lt, e ratio, artery made, deep learning, wsis delineated, pathology delineated, computer shows, kidney approach, intima made, pathology through, testing delineated, wsis framework, slide delineated, numerical shows, intima shows, approach, e shows, kidney delineated, tau shows, 0 shows, sampling, pathomic made, 0 lt, learning delineated, dl shows, arteriosclerosis compared, ratio, measurement shows, pathomic shows, vision approach, analysis shows, thickness extracted, computer through, g shows, pathology shows, vision shows, dl framework, media delineated, dice shows, tau through, testing framework, vision through, pathology characterize, arteriosclerosis shows, technique shows, learning framework": 1,
+      "machine learning, registration raphia, networks raphia, raphia, deep learning, learning raphia": 1,
+      "deep-learning, validation, cross": 1,
+      "foundation model, vector improve, point placed, prompts, vector detect, ai detect, model for, pre-trained model, data detect, meta detect, resolution detect, text placed, anything detect, classification supervised, model detect, environments analyse, uav, point prompts, sensing analyse, resolution collect, source detect, source for, anything for, advances, models, control collect, disease analyse, resolution for, mosquito collect, surveillance improve, image placed, foundation detect, earth analyse, image models, ai for, meta for, foundation for, studies analyse, segmentation models": 1
+    }
+  }
+}

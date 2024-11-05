@@ -76,15 +76,15 @@ After processing the dataset of 11,450 papers, we obtained the following results
 
 ### Distribution of Method Types
 
-![Method Type Distribution](results/method_type_distribution.png)
+![Method Type Distribution](results/plots/method_type_distribution.png)
 
 ### Method Type Percentages
 
-![Method Type Percentages](results/method_type_percentages.png)
+![Method Type Percentages](results/plots/method_type_percentages.png)
 
 ### Method Type Distribution Over Time
 
-![Method Types Over Time](results/method_types_over_time.png)
+![Method Types Over Time](results/plots/method_types_over_time.png)
 
 ## Project Structure
 ```
