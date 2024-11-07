@@ -88,7 +88,7 @@ if __name__ == '__main__':
         excel_file_path = os.path.join(current_dir, '..', '..', 'data', 'collection_with_abstracts.xlsx')
 
         # Convert only first 25 rows
-        limit = 35
+        limit = 40
 
         # Convert the CSV to Excel with limit
         status = convert_csv_to_excel(csv_file_path, excel_file_path, limit=limit)

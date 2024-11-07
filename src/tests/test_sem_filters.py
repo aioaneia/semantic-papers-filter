@@ -30,7 +30,7 @@ def test_semantic_filtering():
     for index, row in df.iterrows():
         combined_text = f"{row['Title']} {row['Abstract']}"
 
-        is_relevant, scores = semantic_filter.is_semantic_relevant(combined_text)
+        is_relevant, scores = semantic_filter.is_semantic_relevant_by_pattern_matching(combined_text)
 
         is_relevant_by_similarity, similarity_scores = semantic_filter.is_semantic_relevant_by_similarity(combined_text)
 

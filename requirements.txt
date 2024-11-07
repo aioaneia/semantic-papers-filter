@@ -8,7 +8,6 @@ spacy~=3.8.2
 
 # Data Visualization
 plotly~=5.24.0
-matplotlib~=3.9.2
 
 # Langchain
 langchain~=0.2.9

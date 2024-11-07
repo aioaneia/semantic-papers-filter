@@ -10,6 +10,9 @@ from src.pipelines.pipeline      import Pipeline
 from src.filters.semantic_filter import SemanticFilter
 from src.utils.visualization     import StatsVisualizer
 
+# Set up logging
+# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 class PaperFilteringApp:
     """
@@ -20,18 +23,17 @@ class PaperFilteringApp:
         """
         Initialize the application with configuration.
         """
-        self.config         = self.load_config(config_path)
-        self.logger         = logging.getLogger(__name__)
-        self.data_loader    = DataLoader()
-        self.preprocessor   = Preprocessor()
-        self.nlp_classifier = SemanticFilter(self.config['SPACY_MODEL'], self.config['TRANSFORMER_MODEL'])
-        self.visualizer     = StatsVisualizer()
+        self.config = self.load_config(config_path)
+
+        self.logger = logging.getLogger(__name__)
+
+        self.logger.setLevel(logging.INFO)
 
         self.pipeline = Pipeline(
-            data_loader=self.data_loader,
-            preprocessor=self.preprocessor,
-            semantic_filter=self.nlp_classifier,
-            visualizer=self.visualizer
+            data_loader=DataLoader(),
+            preprocessor=Preprocessor(),
+            semantic_filter=SemanticFilter(self.config['SPACY_MODEL'], self.config['TRANSFORMER_MODEL']),
+            visualizer=StatsVisualizer()
         )
 
 
@@ -45,7 +47,7 @@ class PaperFilteringApp:
             self.logger.info("Starting paper processing pipeline...")
 
             # Process papers and get relevant and irrelevant DataFrames
-            relevant_df, irrelevant_df = self.pipeline.process_papers(
+            relevant_df, irrelevant_df, time_taken = self.pipeline.process_papers(
                 self.config['DATASET_PATH'],    # Path to dataset
                 self.config['DATASET_LIMIT'],   # Limit number of papers
                 "../results/files"  # Output directory
@@ -55,12 +57,14 @@ class PaperFilteringApp:
             stats = self.pipeline.generate_statistics(
                 relevant_df,
                 irrelevant_df,
-                os.path.join('../results/stats/', 'nlp_statistics.json')
+                os.path.join('../results/stats/', 'nlp_statistics.json'),
+                time_taken
             )
 
             # Plot statistics
             self.pipeline.plot_statistics(
                 relevant_df,
+                irrelevant_df,
                 stats,
                 "../results/plots"
             )

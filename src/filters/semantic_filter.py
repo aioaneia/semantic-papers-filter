@@ -1,3 +1,4 @@
+
 import sys
 import spacy
 import pandas as pd
@@ -22,12 +23,19 @@ class SemanticFilter:
         Args:
             spacy_model: Name of the spaCy model to use
         """
-        self.nlp             = self.load_spacy_model(spacy_model)
-        self.transformer     = SentenceTransformer(transformer_model)
-        self.dl_embeddings   = self.transformer.encode(Constants.DL_SENTENCES, convert_to_tensor=True)
-        self.matcher         = self.initialize_matcher()
-        self.medical_matcher = self.initialize_medical_matcher()
-        self.method_matchers = self.initialize_method_matchers()
+        # Load spaCy model and SentenceTransformer
+        self.nlp               = self.load_spacy_model(spacy_model)
+        self.transformer       = SentenceTransformer(transformer_model)
+
+        # Embed domain-specific sentences for semantic relevance
+        self.dl_embeddings     = self.transformer.encode(Constants.DL_SENTENCES, convert_to_tensor=True)
+        self.domain_embeddings = self.transformer.encode(Constants.DOMAIN_SENTENCES, convert_to_tensor=True)
+
+        # Initialize matchers
+        self.matcher           = self.initialize_matcher()
+        self.medical_matcher   = self.initialize_medical_matcher()
+        self.method_matchers   = self.initialize_method_matchers()
+        self.negative_matcher  = self.initialize_negative_matcher()
 
 
     @staticmethod
@@ -99,6 +107,19 @@ class SemanticFilter:
         return method_matchers
 
 
+    def initialize_negative_matcher(self) -> PhraseMatcher:
+        """
+        Initialize PhraseMatcher for negative keywords to filter out irrelevant papers.
+        """
+        matcher = PhraseMatcher(self.nlp.vocab, attr="LOWER")
+
+        negative_patterns = [self.nlp.make_doc(term) for term in Constants.NEGATIVE_KEYWORDS]
+
+        matcher.add("NEGATIVE_KEYWORD", negative_patterns)
+
+        return matcher
+
+
     def is_semantic_relevant_by_similarity(self, text: str) -> Tuple[bool, Dict[str, float]]:
         """
         Check if text is semantically relevant using sentence embeddings.
@@ -108,31 +129,48 @@ class SemanticFilter:
         :param text: Input text to analyze containing title and abstract of the paper
         :return: is_relevant
         """
+        # Embedding the text and convert to tensor for cosine similarity
         text_embedding = self.transformer.encode(text, convert_to_tensor=True)
 
-        # Compute cosine similarities
-        cosine_scores = util.cos_sim(text_embedding, self.dl_embeddings)
+        # Compute cosine similarities with Deep Learning sentences
+        dl_cosine_scores = util.cos_sim(text_embedding, self.dl_embeddings)
+        dl_max_similarity = dl_cosine_scores.max().item()
 
-        # Get the maximum similarity score
-        max_similarity = cosine_scores.max().item()
+        # Compute cosine similarity with domain sentences
+        domain_cosine_scores = util.cos_sim(text_embedding, self.domain_embeddings)
+        domain_max_similarity = domain_cosine_scores.max().item()
 
-        # Set a threshold for relevance
-        similarity_threshold = 0.25  # Adjust based on validation
+        # Set thresholds
+        dl_similarity_threshold = 0.39
+        domain_similarity_threshold = 0.2
 
-        is_relevant = max_similarity >= similarity_threshold
+        is_dl_relevant = dl_max_similarity >= dl_similarity_threshold
+        is_domain_relevant = domain_max_similarity >= domain_similarity_threshold
 
-        return is_relevant, {'similarity': max_similarity}
+        is_relevant = is_dl_relevant and is_domain_relevant
+
+        scores = {
+            'dl_similarity_score': dl_max_similarity,
+            'domain_similarity_score': domain_max_similarity
+        }
+
+        return is_relevant, scores
 
 
-    def is_semantic_relevant(self, text: str) -> Tuple[bool, Dict[str, float]]:
+    def is_semantic_relevant_by_pattern_matching(self, text: str) -> Tuple[bool, Dict[str, float]]:
         """
         Check if text is semantically relevant using spaCy's matcher.
 
-        :param text: Input text to analyze
-
+        :param text: Input text to analyze containing title and abstract of the paper
         :return: Tuple of (is_relevant, confidence_scores)
         """
+        # Check for missing or invalid text
         if pd.isna(text) or not isinstance(text, str):
+            return False, {'architecture': 0.0, 'task': 0.0, 'context': 0.0}
+
+        # Check if the text contains negative keywords and no medical context before proceeding
+        # Do not count as negative if in positive context
+        if self.contains_negative_keywords(text) and not self.contains_medical_terms(text):
             return False, {'architecture': 0.0, 'task': 0.0, 'context': 0.0}
 
         # First check for medical context that would invalidate the paper
@@ -141,6 +179,8 @@ class SemanticFilter:
 
         try:
             doc = self.nlp(text.lower())
+
+            # Use the matcher to find relevant terms in the text
             matches = self.matcher(doc)
 
             # Count unique matches per category
@@ -152,7 +192,7 @@ class SemanticFilter:
 
             # Calculate scores based on matched terms
             scores = {
-                category: min(len(terms) * Constants.WEIGHTS[category], 1.0)
+                category: min(len(terms) * Constants.WEIGHTS.get(category, 0.0), 1.0)
                 for category, terms in matched_terms.items()
             }
 
@@ -160,10 +200,16 @@ class SemanticFilter:
             scores = defaultdict(float, scores)
 
             # Determine relevance based on the scores and criteria
+            # is_relevant = (
+            #         scores['architecture'] > 0 or
+            #         (scores['task'] >= 0.5 and scores['context'] > 0) or
+            #         ('algorithm' in text.lower() and scores['task'] > 0)
+            # )
+
             is_relevant = (
-                    scores['architecture'] > 0 or
-                    (scores['task'] >= 0.5 and scores['context'] > 0) or
-                    ('algorithm' in text.lower() and scores['task'] > 0)
+                    (scores['architecture'] >= 0.3 and scores['task'] >= 0.3) or
+                    (scores['architecture'] >= 0.6 and scores['context'] >= 0.1) or
+                    (scores['task'] >= 0.6 and scores['context'] >= 0.1)
             )
 
             return is_relevant, dict(scores)
@@ -175,20 +221,48 @@ class SemanticFilter:
 
     def is_medical_context(self, text: str) -> bool:
         """
-        Check if the text is primarily about medical conditions.
+        Check if the text is only about medical conditions.
 
         Args:
             text: Input text to analyze.
-
         Returns:
             True if the text is primarily medical, False otherwise.
         """
-        doc                   = self.nlp(text)
-        medical_matches       = self.medical_matcher(doc)
+        doc = self.nlp(text)
+        medical_matches = self.medical_matcher(doc)
         computational_matches = self.matcher(doc)
 
-        # If there are more medical matches than computational matches, it's likely medical context
-        return len(medical_matches) > len(computational_matches)
+        return len(medical_matches) > 0 and len(computational_matches) == 0
+
+
+    def contains_medical_terms(self, text: str) -> bool:
+        """
+        Check if the text contains medical terms.
+
+        Args:
+            text: Input text to analyze.
+        Returns:
+            True if the text contains medical terms, False otherwise.
+        """
+        doc = self.nlp(text)
+
+        matches = self.medical_matcher(doc)
+
+        return len(matches) > 0
+
+
+    def contains_negative_keywords(self, text: str) -> bool:
+        """
+        Check if the text contains negative keywords.
+
+        :param text:
+        :return:
+        """
+        doc = self.nlp(text.lower())
+
+        matches = self.negative_matcher(doc)
+
+        return len(matches) > 0
 
 
     def classify_method(self, text: str) -> str:
@@ -210,17 +284,18 @@ class SemanticFilter:
                 scores[method_type] = len(matches)
 
             # Determine method type based on the matches
-            text_mining     = scores.get('text_mining', 0) > 0
-            computer_vision = scores.get('computer_vision', 0) > 0
+            text_mining     = scores.get(Constants.TOPICS['text_mining'], 0) > 0
+            computer_vision = scores.get(Constants.TOPICS['computer_vision'], 0) > 0
 
             if text_mining and computer_vision:
-                return "both"
+                return Constants.TOPICS['both']
             elif text_mining:
-                return "text mining"
+                return Constants.TOPICS['text_mining']
             elif computer_vision:
-                return "computer vision"
+                return Constants.TOPICS['computer_vision']
             else:
-                return "other"
+                return Constants.TOPICS['other']
+
         except Exception as e:
             print(f"Error in classify_method: {e}")
             return "other"
@@ -237,34 +312,59 @@ class SemanticFilter:
             Extracted method name or an empty string if none found.
         """
         if not text or not isinstance(text, str):
-            return ""
+            return 'not specified'
+
+        # Define relevant verbs and phrases indicating method usage
+        relevant_verbs = {
+            'use', 'implement', 'develop', 'propose',
+            'apply', 'employ', 'utilize', 'design', 'train', 'introduce'
+        }
+
+        introduction_phrases = {'called', 'known as', 'referred to as', 'termed'}
 
         try:
             doc = self.nlp(text)
             method_names = set()
 
-            # Use NER to find potential method names
-            for ent in doc.ents:
-                if ent.label_ in ['ORG', 'PRODUCT', 'WORK_OF_ART', 'TECH']:
-                    if self.is_valid_method_name(ent.text):
-                        method_names.add(ent.text)
+            # Use Matcher for pattern matching
+            matcher = Matcher(self.nlp.vocab)
+
+            # Pattern: Verb + Determiner (optional) + Adjective(s) + Noun (method name)
+            pattern = [
+                {'LEMMA': {'IN': list(relevant_verbs)}, 'POS': 'VERB'},
+                {'OP': '*'},
+                {'POS': 'DET', 'OP': '?'},
+                {'POS': 'ADJ', 'OP': '*'},
+                {'POS': 'NOUN', 'OP': '+'},
+            ]
+            matcher.add('METHOD_PATTERN', [pattern])
+
+            # Pattern: Phrases indicating method introduction
+            for phrase in introduction_phrases:
+                pattern = [
+                    {'LOWER': phrase.split()[0]},
+                    {'LOWER': phrase.split()[1]} if len(phrase.split()) > 1 else {},
+                    {'OP': '*'},
+                    {'POS': 'PROPN', 'OP': '+'},
+                ]
+                matcher.add('INTRO_PATTERN', [pattern])
+
+            matches = matcher(doc)
+
+            for match_id, start, end in matches:
+                span = doc[start:end]
+                method_candidate = span.text
+
+                # Refine method_candidate
+                method_candidate = self.clean_method_name(method_candidate)
+
+                if self.is_valid_method_name(method_candidate):
+                    method_names.add(method_candidate)
 
             # Also look for specific architecture terms in the text
             for term in Constants.DL_PATTERNS['architecture']:
                 if term.lower() in text.lower():
                     method_names.add(term)
-
-            # Use pattern matching to find methods associated with verbs like 'use', 'implement', etc.
-            for token in doc:
-                if token.lemma_ in ['use', 'implement', 'develop', 'propose', 'apply', 'employ', 'utilize', 'design', 'train']:
-                    # Look for direct objects of these verbs
-                    for child in token.children:
-                        if child.dep_ in ['dobj', 'pobj', 'dative']:
-                            method_names.add(child.text)
-                        # Include compounds (e.g., 'neural network')
-                        for descendant in child.subtree:
-                            if descendant.dep_ == 'compound':
-                                method_names.add(descendant.text + ' ' + child.text)
 
             # Clean and deduplicate method names
             method_names = [method.strip() for method in method_names if len(method.strip()) > 2]
@@ -274,6 +374,22 @@ class SemanticFilter:
         except Exception as e:
             print(f"Error in extract_method_name: {e}")
             return ""
+
+
+    @staticmethod
+    def clean_method_name(method_candidate: str) -> str:
+        """
+        Clean and normalize the extracted method name.
+
+        Args:
+            method_candidate: The raw method name extracted.
+
+        Returns:
+            Cleaned method name.
+        """
+        # Remove unnecessary characters and whitespace
+        method_candidate = method_candidate.strip(' .,;-:"\'')
+        return method_candidate
 
 
     @staticmethod
@@ -297,4 +413,4 @@ class SemanticFilter:
             term.lower() in text_lower
             for terms in Constants.DL_PATTERNS.values()
             for term in terms
-        )
+        ) or any(keyword in text_lower for keyword in ['model', 'network', 'algorithm', 'approach', 'method'])
