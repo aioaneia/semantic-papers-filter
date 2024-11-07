@@ -1,38 +1,129 @@
 {
-  "total_relevant_papers": 65,
-  "total_papers_processed": 120,
-  "relevance_percentage": 54.17,
+  "total_relevant_papers": 1541,
+  "total_papers_processed": 5000,
+  "relevance_percentage": 30.82,
   "method_counts": {
-    "computer vision": 45,
-    "both": 11,
-    "other": 8,
-    "text mining": 1
+    "computer_vision": 767,
+    "other": 499,
+    "both": 160,
+    "text_mining": 115
   },
   "method_percentages": {
-    "computer vision": 69.23,
-    "both": 16.92,
-    "other": 12.31,
-    "text mining": 1.54
+    "computer_vision": 49.77,
+    "other": 32.38,
+    "both": 10.38,
+    "text_mining": 7.46
   },
   "top_method_names_overall": {
-    "Not specified": 2,
-    "media shows, p shows, pathology approach, thickness study, wall extracted, media ratio, dl delineated, technique ratio, computer approach, intima ratio, images delineated, framework, vision delineated, analysis through, computer delineated, g ratio, p lt, e ratio, artery made, deep learning, wsis delineated, pathology delineated, computer shows, kidney approach, intima made, pathology through, testing delineated, wsis framework, slide delineated, numerical shows, intima shows, approach, e shows, kidney delineated, tau shows, 0 shows, sampling, pathomic made, 0 lt, learning delineated, dl shows, arteriosclerosis compared, ratio, measurement shows, pathomic shows, vision approach, analysis shows, thickness extracted, computer through, g shows, pathology shows, vision shows, dl framework, media delineated, dice shows, tau through, testing framework, vision through, pathology characterize, arteriosclerosis shows, technique shows, learning framework": 1,
-    "machine learning, registration raphia, networks raphia, raphia, deep learning, learning raphia": 1,
-    "deep-learning, validation, cross": 1,
-    "foundation model, vector improve, point placed, prompts, vector detect, ai detect, model for, pre-trained model, data detect, meta detect, resolution detect, text placed, anything detect, classification supervised, model detect, environments analyse, uav, point prompts, sensing analyse, resolution collect, source detect, source for, anything for, advances, models, control collect, disease analyse, resolution for, mosquito collect, surveillance improve, image placed, foundation detect, earth analyse, image models, ai for, meta for, foundation for, studies analyse, segmentation models": 1,
-    "predictions, data": 1,
-    "tumor generate, models, ultrasound of, cancer total, tumor region, ultrasound total, cancer models, appearance, features, frequency appearance, selection appearance, total, feature appearance, region, radiomic generate, hazards appearance, ultrasound features": 1,
-    "degeneration, deformity for, body accomplished, ct methods, fg methods, genant for, analysis, deformity autocorrelation, contour algorithm, intensity accomplished, ap algorithm, compression degeneration, autocorrelation, experts methods, contour analysis, chest accomplished, computation, intensity algorithm, fracture autocorrelation, fracture algorithm, ratio functions, tomography methods, intensity using, height features, deep learning, functions, fracture using, ratio using, likelihood delineation, fracture methods, fracture for, deformity methods, contour accomplished, ratio accomplished, height methods, intensity autocorrelation, height autocorrelation, delineation, artificial intelligence, ap analysis, fg learning, ap accomplished, fracture accomplished, experts autocorrelation, et for, experts features, intelligence, algorithm, ratio algorithm, learning, contour using, fracture analysis, features, lung to, ap using, likelihood accomplished, intensity methods": 1,
-    "liver classify, type extract, tomography from, hypertension classify, ct extract, hypertension extract, cardiometabolic conditions, disorders predict, deep learning imaging, mets classify, ii classify, 2 predict, syndrome predict, disease extract, ct predict, deep learning, idp, phenotype idp, syndrome classify, liver predict, ct from, cardiometabolic predict, disease classify, hypertension predict, type classify, learning approach, conditions, 1 classify, 2 extract, 1 extract, ii extract, phenotype study, liver extract, ii predict, tomography study, study, ct study, learning, mets extract, type predict, 1 predict, syndrome extract, mets predict, disease predict, learning predict": 1,
-    "participants model, model, risk model, data, biomarkers data, world model, oa model, cohort model, hip model, imaging optimise, prediction model": 1
+    "deep learning": 107,
+    "deep learning, artificial intelligence": 30,
+    "machine learning, deep learning": 20,
+    "deep-learning": 16,
+    "Not specified": 12,
+    "machine learning, deep learning, artificial intelligence": 12,
+    "artificial intelligence": 11,
+    "gan, deep learning": 9,
+    "machine learning": 7,
+    "neural network, deep learning": 5
   },
   "top_method_names_by_year": {
-    "2024": {
+    "1992": {
+      "neural network, artificial neural network, artificial intelligence": 1
+    },
+    "1993": {
+      "neural network": 1,
+      "using profile matching and back-propagation neural network, trained neural networks, trained neural networks program, used to enhance true-positive detection, neural network": 1
+    },
+    "1994": {
+      "uses these patterns to make predictions, neural network, artificial neural network": 1
+    },
+    "1996": {
+      "artificial neural network, train a neural-network, employing neural networks, used to train a neural-network, employing neural networks the technique, gan, train a neural-network classifier, train a neural-network classifier the performance, used to train a neural-network classifier, neural network": 1
+    },
+    "1998": {
+      "neural network, gan": 1
+    },
+    "2005": {
+      "Not specified": 2
+    },
+    "2007": {
+      "Not specified": 1
+    },
+    "2008": {
+      "Not specified": 1
+    },
+    "2012": {
+      "gan": 1
+    },
+    "2013": {
+      "applying machine learning and clustering techniques, applying machine learning and clustering, applying machine learning, machine learning": 1
+    },
+    "2015": {
       "Not specified": 2,
-      "media shows, p shows, pathology approach, thickness study, wall extracted, media ratio, dl delineated, technique ratio, computer approach, intima ratio, images delineated, framework, vision delineated, analysis through, computer delineated, g ratio, p lt, e ratio, artery made, deep learning, wsis delineated, pathology delineated, computer shows, kidney approach, intima made, pathology through, testing delineated, wsis framework, slide delineated, numerical shows, intima shows, approach, e shows, kidney delineated, tau shows, 0 shows, sampling, pathomic made, 0 lt, learning delineated, dl shows, arteriosclerosis compared, ratio, measurement shows, pathomic shows, vision approach, analysis shows, thickness extracted, computer through, g shows, pathology shows, vision shows, dl framework, media delineated, dice shows, tau through, testing framework, vision through, pathology characterize, arteriosclerosis shows, technique shows, learning framework": 1,
-      "machine learning, registration raphia, networks raphia, raphia, deep learning, learning raphia": 1,
-      "deep-learning, validation, cross": 1,
-      "foundation model, vector improve, point placed, prompts, vector detect, ai detect, model for, pre-trained model, data detect, meta detect, resolution detect, text placed, anything detect, classification supervised, model detect, environments analyse, uav, point prompts, sensing analyse, resolution collect, source detect, source for, anything for, advances, models, control collect, disease analyse, resolution for, mosquito collect, surveillance improve, image placed, foundation detect, earth analyse, image models, ai for, meta for, foundation for, studies analyse, segmentation models": 1
+      "machine learning": 1,
+      "using multimodal retinal image, machine learning, using single- and multimodality grading, using multimodal retinal image analysis, developed machine learning system, using single- and multimodality grading protocols, using a multimodality grading approach, developed machine learning system furthermore automatic quantification, using single- and multimodality information methods color, using a multimodality grading, using single- and multimodality information methods, using single- and multimodality information, using single- and multimodality, using a multimodality, developed machine learning, using multimodal retinal image analysis purpose": 1
+    },
+    "2016": {
+      "training deep learning, trained model achieves an accuracy, neural network, using deep learning for image-based plant, training deep learning models, train a deep convolutional neural network, convolutional neural network, using deep learning for image, deep learning, trained model, using deep learning, using deep learning for image-based plant disease": 1,
+      "machine learning, use several different kernel-based machine learning, using an integrative kernel-based approach texture, use several different kernel-based machine learning techniques, using an integrative kernel-based approach, using an integrative kernel-based approach texture information": 1,
+      "employing the loo and the bootstrap methods, neural network": 1
+    },
+    "2017": {
+      "machine learning, develop more powerful deep learning models, using deep learning techniques, deep learning, develop more powerful deep learning, using deep learning": 1,
+      "cnn, artificial intelligence, convolutional neural network, using cnn with higher accuracy, neural network": 1,
+      "using a seed-driven approach, using pattern recognition, using pattern recognition analyses these findings": 1,
+      "design a computer model, neural network, used for cytomorphologic assessment a multilayer perceptron": 1,
+      "proposed signature achieved better performance for prediction, deep learning": 1
+    },
+    "2018": {
+      "machine learning": 1,
+      "used to obtain the image recognition accuracy, applying deep learning, applying deep learning to digital radiography, alexnet, deep learning, used to obtain the image recognition": 1,
+      "trained a residual convolutional neural network, developed a deep learning, neural network, developed a deep learning technique, convolutional neural network, applying a residual convolutional neural network, deep learning": 1,
+      "deep learning": 1,
+      "neural architecture": 1
+    },
+    "2019": {
+      "u-net, trained to perform the tumor segmentation task, trained for tumor segmentation, cnn, trained for tumor segmentation in pet, convolutional neural network, trained to perform the tumor segmentation, neural network": 1,
+      "neural network, artificial neural network": 1,
+      "Not specified": 1,
+      "train and evaluate these models, artificial intelligence, convolutional neural network, deep learning, neural network": 1,
+      "develop a deep learning -based visual evaluation, develop a deep learning, training validation of the deep learning-based algorithm, training validation of the deep learning, deep learning": 1
+    },
+    "2020": {
+      "deep learning": 3,
+      "deep learning, artificial intelligence": 2,
+      "uses an object-based image analysis obia approach, uses machine learning, uses machine learning capabilities, machine learning": 1,
+      "deep learning, artificial intelligence, proposed methodologies, proposed methodologies is conducted finally current limitations": 1,
+      "using ventricle segmentation, using ventricle segmentation registration, proposed method to improve clinical image, proposed method, proposed method to improve clinical image registration, using a neural network, used the proposed method, using ventricle segmentation registration is a core, neural network": 1
+    },
+    "2021": {
+      "artificial intelligence": 3,
+      "convolutional neural network, deep learning, neural network": 3,
+      "deep learning": 2,
+      "machine learning, deep learning, artificial intelligence": 2,
+      "Not specified": 2
+    },
+    "2022": {
+      "deep learning": 23,
+      "deep learning, artificial intelligence": 5,
+      "machine learning, deep learning": 3,
+      "machine learning, deep learning, artificial intelligence": 2,
+      "design an effective exploratory model using machine, machine learning, using machine learning ml technology, design an effective exploratory model, neural network": 1
+    },
+    "2023": {
+      "deep learning": 41,
+      "deep learning, artificial intelligence": 12,
+      "machine learning, deep learning": 11,
+      "artificial intelligence": 5,
+      "machine learning, deep learning, artificial intelligence": 4
+    },
+    "2024": {
+      "deep learning": 37,
+      "deep learning, artificial intelligence": 10,
+      "deep-learning": 9,
+      "machine learning, deep learning": 5,
+      "gan, deep learning": 5
     }
-  }
+  },
+  "time_taken": 356.7446479797363
 }
