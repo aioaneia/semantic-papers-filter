@@ -1,8 +1,10 @@
 
-import yaml
 import os
 import logging
+
 from pathlib import Path
+
+import src.utils.file_utils as file_utils
 
 from src.data.data_loader        import DataLoader
 from src.data.preprocessor       import Preprocessor
@@ -10,20 +12,18 @@ from src.pipelines.pipeline      import Pipeline
 from src.filters.semantic_filter import SemanticFilter
 from src.utils.visualization     import StatsVisualizer
 
-# Set up logging
-# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class PaperFilteringApp:
     """
     Main application class for paper filtering system.
     """
-
     def __init__(self, config_path: str):
         """
         Initialize the application with configuration.
         """
-        self.config = self.load_config(config_path)
+        self.config = file_utils.load_config(config_path)
 
         self.logger = logging.getLogger(__name__)
 
@@ -32,10 +32,12 @@ class PaperFilteringApp:
         self.pipeline = Pipeline(
             data_loader=DataLoader(),
             preprocessor=Preprocessor(),
-            semantic_filter=SemanticFilter(self.config['SPACY_MODEL'], self.config['TRANSFORMER_MODEL']),
+            semantic_filter=SemanticFilter(
+                self.config['SPACY_MODEL'],
+                self.config['TRANSFORMER_MODEL']
+            ),
             visualizer=StatsVisualizer()
         )
-
 
     def run(self):
         """
@@ -72,19 +74,7 @@ class PaperFilteringApp:
             self.logger.info("Paper processing complete.")
         except Exception as e:
             print(f"Error during processing: {e}")
-            raise
-
-    @staticmethod
-    def load_config(config_path: str) -> dict:
-        """
-        Load configuration from YAML file.
-        """
-        try:
-            with open(config_path, 'r') as config_file:
-                return yaml.safe_load(config_file)
-        except Exception as e:
-            raise ValueError(f"Failed to load config: {e}")
-
+            raise e
 
     @staticmethod
     def setup_output_dirs():
@@ -102,14 +92,13 @@ class PaperFilteringApp:
 
 def main():
     """
-    Main entry point for the application.
+    Main entry point for the application script to run the pipeline and process papers from the dataset file.
+    the configuration file is loaded and the pipeline is initialized with the necessary components.
     """
     app = PaperFilteringApp(
         '../config.yaml'
     )
-
     app.run()
-
 
 if __name__ == "__main__":
     main()

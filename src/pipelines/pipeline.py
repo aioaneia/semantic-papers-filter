@@ -3,11 +3,10 @@ import os
 import json
 import logging
 import time
-from logging import Logger
-
-from typing import Optional, Tuple
-
 import pandas as pd
+
+from logging import Logger
+from typing import Optional, Tuple
 
 
 class Pipeline:
@@ -20,13 +19,11 @@ class Pipeline:
         """
         Initialize the pipeline with the specified components.
         """
-        self.data_loader = data_loader
-        self.preprocessor = preprocessor
+        self.data_loader     = data_loader
+        self.preprocessor    = preprocessor
         self.semantic_filter = semantic_filter
-        self.visualizer = visualizer
-        self.logger = logging.getLogger(__name__)
-
-        self.logger.setLevel(logging.INFO)
+        self.visualizer      = visualizer
+        self.logger          = logging.getLogger(__name__)
 
 
     def process_papers(self, dataset_path: str, limit: Optional[int] = None, output_dir: str = '../results/files') \
@@ -42,17 +39,17 @@ class Pipeline:
             start_time: float = time.time()
 
             df = self.data_loader.load_csv_data(dataset_path)
-            self.logger.info(f'Data loaded in {time.time() - start_time:.2f} seconds.')
+            self.logger.info(f'Data loaded in {time.time() - start_time:.2f} seconds.\n')
 
             # Limit the number of papers if specified
             if limit is not None:
                 df = df.head(limit)
-                self.logger.info(f'Data limited to {limit} papers.')
+                self.logger.info(f'Data limited to {limit} papers.\n')
 
             # Prepare the dataset for processing
             df = self.preprocessor.prepare_dataset(df)
 
-            self.logger.info('Starting semantic filtering...')
+            self.logger.info('Starting semantic filtering...\n')
             start_time = time.time()
 
             # Combine title and abstract for processing
@@ -96,11 +93,11 @@ class Pipeline:
             relevant_df_to_save.to_excel(relevant_papers_path, index=False)
             irrelevant_dt_to_save.to_excel(irrelevant_papers_path, index=False)
 
-            self.logger.info(f'Results saved to {relevant_papers_path} and {irrelevant_papers_path}')
+            self.logger.info(f'Results saved to {relevant_papers_path} and {irrelevant_papers_path}.\n')
 
-            self.logger.info(f'Semantic filtering completed in {time.time() - start_time:.2f} seconds.')
+            self.logger.info(f'Semantic filtering completed in {time.time() - start_time:.2f} seconds.\n')
 
-            self.logger.info(f'Average time per paper: {(time.time() - start_time) / len(df):.2f} seconds.')
+            self.logger.info(f'Average time per paper: {(time.time() - start_time) / len(df):.2f} seconds.\n')
 
             return relevant_df_to_save, irrelevant_dt_to_save, time.time() - start_time
 
@@ -164,7 +161,7 @@ class Pipeline:
         with open(output_file_path, "w") as f:
             json.dump(stats, f, indent=2)
 
-        self.logger.info(f'Statistics generated and saved to {output_file_path}')
+        self.logger.info(f'Statistics generated and saved to {output_file_path}.\n')
 
         return stats
 
@@ -183,8 +180,6 @@ class Pipeline:
             relevant_df['year'] = pd.to_numeric(relevant_df['Publication Year'], errors='coerce').fillna(0).astype(int)
 
             self.visualizer.plot_method_type_percentage(method_percentages, output_dir)
-
-            self.visualizer.plot_method_type_distribution_over_time(relevant_df, output_dir)
 
             self.visualizer.plot_trend_of_top_method_names_over_time(top_method_names, relevant_df, output_dir)
 
@@ -210,7 +205,7 @@ class Pipeline:
             ## A cloud plot of method occurrence in relevant papers (Method Name)
             self.visualizer.plot_word_cloud(relevant_df, output_dir, text_column='Method Name')
 
-            self.logger.info('Plots generated.')
+            self.logger.info('Plots generated successfully.\n')
 
         except Exception as e:
             self.logger.error(f'Error in plot_statistics: {e}')

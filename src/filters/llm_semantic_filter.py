@@ -1,7 +1,7 @@
+
 import asyncio
 import logging
 import re
-import yaml
 from dataclasses import dataclass
 
 from datetime import datetime
@@ -11,7 +11,7 @@ from typing import Dict
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_ollama import ChatOllama
-
+from langchain_openai import ChatOpenAI
 
 @dataclass
 class ClassificationResult:
@@ -26,7 +26,7 @@ class PaperClassifier:
         """Initialize the paper classifier with configuration."""
 
         # Valid method types
-        self.VALID_METHOD_TYPES = {"text_mining", "computer_vision", "both", "other"}
+        self.VALID_METHOD_TYPES = {"text_mining", "computer_vision", "both", "other", ""}
 
         # Initialize LLM
         self.model = self.initialize_llm_model()
@@ -38,17 +38,22 @@ class PaperClassifier:
         self.classification_chain = self.create_chain()
 
 
-    def initialize_llm_model(self):
+    @staticmethod
+    def initialize_llm_model():
         """
         Initialize the LLM model with the correct parameters.
         """
-        return ChatOllama(
-            model='llama3.2:3b',
-            format='json',
-            temperature=0.1,
-            top_p=0.9,  # Slightly constrained sampling
-            repeat_penalty=1.1  # Discourage repetition
+        # return ChatOllama(
+        #     model='llama3.1:8b',  # llama3.2:3b, llama3.1:8b,
+        #     format='json',
+        # )
+
+        return ChatOpenAI(
+            openai_api_key='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',
+            model_name='o1-mini',  # o1-preview and o1-mini,
+            temperature=1.0,
         )
+
 
     def create_chain(self):
         """
@@ -56,41 +61,94 @@ class PaperClassifier:
         """
 
         CLASSIFICATION_TEMPLATE = """
-        You are an expert for analyzing computer science research papers in Virology/Epidemiology. 
+        You are an expert in analyzing computer science research papers in Virology/Epidemiology. 
         Your task is to carefully analyze the input paper and classify its computational methods.
 
-        Guidelines for classification:
-        1. RELEVANCE criteria:
-           - Clear use of  text mining, machine learning, deep learning, or AI methods
-           
-        2. METHOD TYPE criteria:
-           - "text_mining": NLP, text analysis, content analysis, social media analysis, etc.
-           - "computer_vision": Image processing, visual analysis, object detection, etc.
-           - "both": When both text and image analysis are used
-           - "other": When no clear method type is mentioned
+        **PRIMARY CRITERIA:**
+        1. **Deep Learning Focus:**
+           - Look for **explicit mentions** of neural networks, deep learning architectures, or AI-based approaches.
+           - Consider only papers that apply these methods to **virology/epidemiology** problems.
+           - Exclude papers that mention these terms only in passing, in the introduction, or as future work.
+   
+        2. **Method Classification:**
+           - **TEXT MINING:**
+             * NLP for genomic sequences
+             * Text analysis of clinical records
+             * Language models for medical literature
+             * Social media analysis for disease tracking
 
-        3. METHOD NAME criteria:
-           - Specific approach or algorithm names (e.g., "BERT", "CNN", "Inception-v3")
-           - For multiple methods, choose the primary one
+           - **COMPUTER VISION:**
+             * Medical image analysis (X-rays, CT scans)
+             * Microscopy image processing
+             * Pathogen detection in images
+             * Visual diagnosis systems
 
-        4. REASONING criteria:
-              - Brief explanation of the classification decision (max 100 chars)
-              
-        IMPORTANT: 
-        - Some papers may not use computational methods and 
-        could be about cognitive science, psychology, medical research, syndrome like computer vision syndrome, etc.
-        These are not relevant and should be filtered out as irrelevant.
-        - Focus only on the computational methods used in the paper.
-        
-        Paper to analyze:
+           - **BOTH:** When both text and image analysis are central to the method
+
+           - **OTHER:** Novel deep learning approaches that don't fit above categories
+
+        3. **Method Identification:**
+           Look for specific architecture names like:
+           - For Text: BERT, GPT, RNN, LSTM, Transformer
+           - For Vision: CNN, ResNet, U-Net, YOLO
+           - General: Neural Networks, Deep Learning, Transfer Learning
+
+        **EXCLUSION CRITERIA:**
+        - Papers using deep learning or AI methods in domains **other than** virology or epidemiology (e.g., urban planning, energy efficiency).
+        - Traditional statistical methods or machine learning without deep learning or neural networks.
+        - Pure epidemiological studies without computational methods.
+        - Clinical trials or medical studies without AI or computational components.
+        - Medical research not involving computational methods (e.g., purely laboratory-based studies).
+        - Papers mentioning "computer vision syndrome" (a medical condition unrelated to computer vision techniques).
+        - Future work or proposed applications without actual implementation.
+
+        **EXAMPLE ANALYSIS:**
+        Paper: "BERT-based analysis of viral mutation patterns from clinical records"
+        {{
+            "relevant": true,
+            "method_type": "text_mining",
+            "method_name": "BERT",
+            "reasoning": "Uses BERT model to analyze clinical text data for viral mutations"
+        }}
+
+        Paper: "Deep learning-based analysis of urban traffic patterns for smart city planning"
+        {{
+            "relevant": false,
+            "method_type": "",
+            "method_name": "",
+            "reasoning": "Uses deep learning but in urban planning, not virology or epidemiology"
+        }}
+
+        Paper: "Clinical study of computer vision syndrome in hospital workers"
+        {{
+            "relevant": false,
+            "method_type": "",
+            "method_name": "",
+            "reasoning": "Medical study about eye condition, not about computational methods"
+        }}
+
+        Paper: "Convolutional Neural Networks for Breast Cancer Detection in Mammograms"
+        {{
+            "relevant": false,
+            "method_type": "",
+            "method_name": "",
+            "reasoning": "Applies deep learning to oncology, not virology or epidemiology"
+        }}
+
+        Important Notes:
+        - A paper is considered **relevant** only if it **explicitly mentions** the use of deep learning or AI methods **applied specifically** in the context of **virology** or **epidemiology**.
+        - If the paper uses these methods in **any other field** (e.g., urban planning, energy efficiency, oncology, cardiology), it should be marked as **irrelevant**, even if it involves medical imaging or biological data.
+        - Do **not** assume relevance based on the use of general medical terms; focus on the specific domains of virology and epidemiology.
+
+        Now analyze this paper:
         {text_input}
 
         Provide your analysis in the following JSON format:
         {{
-            "relevant": boolean,     // True if uses relevant computational methods
-            "method_type": string,   // "text_mining", "computer_vision", "both", or "other"
-            "method_name": string,   // Specific method/algorithm name or empty string
-            "reasoning": string,     // Brief explanation (max 100 chars)
+            "relevant": boolean,     // True if uses deep learning/AI in virology/epidemiology
+            "method_type": string,   // "text_mining", "computer_vision", "both", or "other" (empty if irrelevant)
+            "method_name": string,   // Specific method names used (empty if irrelevant)
+            "reasoning": string      // Brief explanation (max 100 chars) for your filtering decisions
         }}
         """
 

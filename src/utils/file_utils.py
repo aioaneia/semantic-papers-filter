@@ -1,10 +1,11 @@
+
+import os
+import yaml
+import logging
 import pandas as pd
 import numpy as np
-import os
-import logging
-from pathlib import Path
 
-# Set up logging
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
@@ -19,6 +20,17 @@ def safe_convert(val):
     if pd.isna(val):
         return ""
     return str(val)
+
+
+def load_config(config_path: str) -> dict:
+    """
+    Load configuration from YAML file.
+    """
+    try:
+        with open(config_path, 'r') as config_file:
+            return yaml.safe_load(config_file)
+    except Exception as e:
+        raise ValueError(f"Failed to load config: {e}")
 
 
 def convert_csv_to_excel(csv_file_path: str, excel_file_path: str, limit: int = None) -> str:
@@ -88,7 +100,7 @@ if __name__ == '__main__':
         excel_file_path = os.path.join(current_dir, '..', '..', 'data', 'collection_with_abstracts.xlsx')
 
         # Convert only first 25 rows
-        limit = 40
+        limit = 50
 
         # Convert the CSV to Excel with limit
         status = convert_csv_to_excel(csv_file_path, excel_file_path, limit=limit)

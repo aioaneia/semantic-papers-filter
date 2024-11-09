@@ -52,6 +52,33 @@ class Constants:
         'forest',
     ]
 
+    DOMAIN_PATTERNS: Dict[str, Set[str]] = {
+        'virology': {
+            'virus', 'viral', 'viruses', 'virology', 'pathogen', 'pathogens',
+            'infected', 'infection', 'infections', 'infectious disease', 'infectious diseases',
+            'infected cells', 'viral infection', 'viral infections', 'viral disease',
+            'antiviral', 'microbiology', 'viral load', 'viral replication',
+            'host-virus interaction', 'immunology', 'vaccination', 'vaccine', 'vaccines',
+            'epidemic', 'pandemic', 'outbreak', 'serology', 'virome', 'virion',
+            'viral genome', 'host immune response', 'COVID-19', 'SARS-CoV-2', 'coronavirus',
+            'e. coli', 'influenza', 'HIV', 'hepatitis', 'dengue', 'Zika', 'Ebola', 'measles',
+            'viral transmission', 'viral replication', 'viral evolution', 'viral mutation', 'mutation',
+            'viral pathogenesis', 'viral protein', 'viral vector', 'viral vector vaccine',
+            'antibodies', 'antibody', 'antigen', 'antigenic', 'antigenic variation',
+            'genetic recombination', 'genetic diversity', 'genetic variation', 'genetic mutation',
+            'viral evolution', 'viral diversity', 'viral mutation', 'viral recombination',
+            'genomic sequence', 'genomic data', 'genomic analysis', 'genomic epidemiology', 'genomic',
+            'monkeypox',
+        },
+        'epidemiology': {
+            'epidemiology', 'epidemiological', 'disease spread', 'disease transmission',
+            'disease modeling', 'public health', 'contact tracing', 'disease surveillance',
+            'incidence', 'prevalence', 'population health', 'health statistics',
+            'risk factors', 'mortality', 'morbidity', 'case fatality rate',
+            'disease outbreak', 'epidemic curve', 'reproduction number'
+        }
+    }
+
     # Method classification patterns with type hints
     METHOD_PATTERNS: Dict[str, Set[str]] = {
         'text_mining': {
@@ -96,8 +123,11 @@ class Constants:
             'mutation detection',
             'phenotype analysis',
             'infodemiology',
+            'language understanding',
+            'semantic parsing',
         },
         'computer_vision': {
+            '3D reconstruction',
             'classification',
             'computer vision',
             'computer-aided vision',
@@ -117,7 +147,9 @@ class Constants:
             'image generation',
             'image harmonization',
             'image area',
+            'pose estimation',
             'object detection',
+            'object tracking',
             'segmentation',
             'spatial inference',
             'scene understanding',
@@ -164,15 +196,18 @@ class Constants:
             'alexnet',
 
             'bert',
+            'bert-like models',
 
             'capsule network',
             'convolutional neural network',
             'cnn',
 
+            'densenet',
             'deep learning',
             'deep-learning',
             'deep neural',
             'decoder',
+
             'encoder',
             'encoder-decoder',
             'efficientnet',
@@ -197,6 +232,8 @@ class Constants:
             'long short-term memory',
 
             'machine learning',
+            'mobilenet', 'mobilenetv2', 'mobilenetv3', 'mobilenetv4', 'mobilenetv5',
+
             'neural network',
             'neural architecture',
 
@@ -220,6 +257,7 @@ class Constants:
             'self-attention mechanism',
             'self-attention layer',
             'seq2seq',
+            'swin transformer',
 
             'u-net',
             'unet',
@@ -284,8 +322,8 @@ class Constants:
     # Scoring weights
     WEIGHTS: Dict[str, float] = {
         'architecture': 0.6,
-        'task': 0.3,
-        'context': 0.1
+        'task':         0.3,
+        'context':      0.1
     }
 
     # Method indicators with weights
@@ -302,26 +340,63 @@ class Constants:
 
     # Domain-specific sentences for semantic similarity
     DOMAIN_SENTENCES = [
-        "We study the spread of infectious diseases using computational models.",
-        "Our research focuses on viral genomics and epidemiology.",
-        "The paper analyzes epidemiological data to predict disease outbreaks.",
-        "We develop computational methods for virology research.",
-        "Our study applies machine learning to understand virus-host interactions.",
-        "We use bioinformatics tools to analyze viral sequences.",
-        "The research involves modeling the transmission dynamics of viruses.",
-        "We apply deep learning to detect viral infections from medical images.",
-        "Our work focuses on vaccine development and efficacy prediction.",
-        "We analyze epidemiological trends in infectious diseases.",
-        "This study investigates the epidemiology of viral diseases.",
-        "We explore the genetic diversity of viral pathogens.",
-        "Our research aims to predict pandemic spread using machine learning.",
-        "We utilize computational biology to study virus evolution.",
-        "The study models the impact of interventions on disease transmission.",
-        "Epidemiological models benefit from deep learning techniques to forecast disease outbreaks.",
-        "Virology research leverages AI to analyze viral genome data.",
-        "Public health initiatives use machine learning for real-time disease surveillance.",
-        "Us a fully-automated artificial intelligence algorithm to detect from CT scans.",
-        "AI-based quantitative image analysis of screening CTs in osteoporosis screening"
+        # Deep Learning Applications in Virology and Epidemiology
+        "We apply deep learning models to predict the spread of infectious diseases.",
+        "Our research uses convolutional neural networks to detect viral infections from medical images.",
+        "We develop machine learning algorithms for real-time epidemiological surveillance.",
+        "The study employs deep learning to analyze genomic sequences of viruses.",
+        "We utilize neural networks to model virus transmission dynamics.",
+        "Our approach applies artificial intelligence to identify patterns in epidemiological data.",
+        "We investigate the use of deep learning for vaccine efficacy prediction.",
+        "Our model predicts viral mutations using recurrent neural networks.",
+        "We leverage deep learning techniques for outbreak detection and response.",
+        "The research focuses on applying machine learning to understand virus-host interactions.",
+        "We use deep learning to analyze social media data for early detection of disease outbreaks.",
+        "Our study employs graph neural networks to model disease transmission networks.",
+        "We develop deep learning frameworks for the classification of pathogens from genomic data.",
+        "Our approach integrates deep learning with epidemiological models to forecast pandemic spread.",
+        "We use bioinformatics and deep learning tools to study viral genome evolution.",
+        "Our research aims to enhance public health initiatives using AI and machine learning.",
+        "We apply transformer-based models to analyze large-scale epidemiological datasets.",
+        "Our system uses deep learning for automated contact tracing analysis.",
+        "We utilize deep learning for drug discovery targeting viral infections.",
+        "Our study focuses on deep learning applications in virology and epidemiology.",
+
+        # Specific Applications and Methods
+        "We develop a deep learning model to detect COVID-19 from chest X-ray images.",
+        "Our research employs machine learning to predict disease outbreaks based on climate data.",
+        "We use convolutional neural networks for segmentation of lesions in MRI scans of infected patients.",
+        "Our approach applies deep learning to identify zoonotic spillover events.",
+        "We utilize unsupervised learning to cluster viral strains based on genetic similarity.",
+        "Our model uses attention mechanisms to improve prediction of infection rates.",
+        "We implement a deep learning pipeline for high-throughput screening of antiviral compounds.",
+        "Our study integrates multimodal data using deep learning for comprehensive epidemiological analysis.",
+        "We employ deep learning to model the impact of interventions on disease spread.",
+        "Our research uses deep reinforcement learning to optimize vaccination strategies.",
+
+        # Combining Deep Learning with Other Biomedical Research
+        "We apply deep learning to analyze microscopy images for rapid pathogen detection.",
+        "Our study uses deep learning to predict protein structures of novel viruses.",
+        "We develop neural network models to identify potential drug targets in viral genomes.",
+        "Our approach utilizes deep learning for phylogenetic analysis of viral evolution.",
+        "We employ deep learning to detect antimicrobial resistance patterns.",
+        "Our research integrates deep learning with CRISPR technology for gene editing applications.",
+        "We use deep learning to analyze single-cell RNA sequencing data in infected tissues.",
+        "Our model predicts host immune response using deep learning algorithms.",
+        "We leverage deep learning for personalized treatment strategies in infectious diseases.",
+        "Our study applies deep learning to understand the spread of antimicrobial resistance.",
+
+        # Public Health and Policy Applications
+        "We develop AI models to support decision-making in public health policy.",
+        "Our research uses deep learning to assess the effectiveness of quarantine measures.",
+        "We apply machine learning to optimize resource allocation during pandemics.",
+        "Our approach uses deep learning to analyze mobility data for infection risk assessment.",
+        "We employ deep learning for sentiment analysis of public opinion on health interventions.",
+        "Our system predicts hospital admission rates using deep learning models.",
+        "We utilize deep learning to identify misinformation related to infectious diseases.",
+        "Our study uses AI to enhance telemedicine services during outbreaks.",
+        "We implement deep learning for real-time monitoring of disease spread using wearable devices.",
+        "Our research applies deep learning to evaluate the socio-economic impact of epidemics.",
     ]
 
     # Define deep learning-related sentences for semantic similarity
@@ -374,6 +449,18 @@ class Constants:
         "Deep learning models are trained to predict drug resistance mutations.",
         "We use deep neural networks to classify pathogens from metagenomic data.",
         "Our research employs deep learning for phylogenetic analysis.",
+
+        # Deep Learning in Epidemiology and Public Health
+        "We use deep reinforcement learning to optimize intervention strategies in epidemics.",
+        "Our research applies deep learning to model human mobility and disease spread.",
+        "We implement LSTM networks to predict future outbreak hotspots.",
+        "Our approach uses deep learning to analyze social networks for contact tracing.",
+        "We employ deep learning to detect early signals of outbreaks from web search data.",
+        "Our model integrates satellite imagery and deep learning for environmental risk assessment.",
+        "We use deep learning to analyze electronic health records for syndromic surveillance.",
+        "Our study applies deep learning to model seasonal patterns in infectious diseases.",
+        "We develop deep learning algorithms for real-time pandemic forecasting.",
+        "Our research uses deep learning to evaluate the effectiveness of public health policies.",
 
         # Deep Learning in Microbiology and Microscopy
         "We apply deep learning techniques to analyze microscopy images for bacterial detection.",
@@ -498,25 +585,25 @@ class Constants:
         "We utilize deep learning for patient stratification in clinical trials.",
         "Our research employs deep learning to model the spread of antimicrobial resistance.",
 
-        # Statements Reflecting the Use of Deep Learning in Research
-        "This paper presents a deep learning approach to solve the problem.",
-        "We propose a neural network model that outperforms traditional methods.",
-        "Our deep learning algorithm achieves state-of-the-art results.",
-        "We conduct experiments using a deep learning framework.",
-        "The results demonstrate the effectiveness of deep learning techniques.",
-        "We explore the application of deep learning in this domain.",
-        "Our study highlights the potential of deep neural networks.",
-        "We compare various deep learning models in our experiments.",
-        "The deep learning method shows significant improvement over baseline models.",
-        "We investigate the impact of deep learning on data analysis.",
-        "Our findings support the use of deep learning for this task.",
-        "We validate our deep learning model on multiple datasets.",
-        "The deep learning approach is integrated into our system.",
-        "We discuss the challenges and solutions in deep learning implementation.",
-        "Our work contributes to the field by introducing deep learning methods.",
-        "We leverage deep learning to enhance the accuracy of predictions.",
-        "The proposed model is based on deep learning architectures.",
-        "We demonstrate how deep learning can be applied effectively.",
-        "Our methodology involves training deep neural networks.",
-        "We show that deep learning provides superior performance.",
+        # Statements Reflecting Deep Learning Use
+        "This paper introduces a deep learning approach for disease prediction.",
+        "We propose a novel neural network architecture that outperforms existing models.",
+        "Our deep learning model achieves state-of-the-art results on epidemiological data.",
+        "We conduct extensive experiments using our deep learning framework.",
+        "The results demonstrate the effectiveness of our deep learning techniques in this domain.",
+        "We explore advanced deep learning applications in virology and epidemiology.",
+        "Our study highlights the potential of deep learning in public health research.",
+        "We compare various deep learning models to identify the best-performing one.",
+        "The deep learning method significantly improves prediction accuracy over baselines.",
+        "We investigate the impact of different deep learning architectures on our results.",
+        "Our findings support the integration of deep learning into epidemiological modeling.",
+        "We validate our deep learning model using cross-validation and external datasets.",
+        "The deep learning approach is seamlessly integrated into our analytical pipeline.",
+        "We discuss challenges and solutions related to deep learning implementation.",
+        "Our work contributes by introducing novel deep learning methods to the field.",
+        "We leverage deep learning to uncover complex patterns in biomedical data.",
+        "The proposed model is based on cutting-edge deep learning architectures.",
+        "We demonstrate how deep learning can be effectively applied to our problem.",
+        "Our methodology involves training deep neural networks on large datasets.",
+        "We show that deep learning provides superior performance in our application.",
     ]
