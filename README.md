@@ -161,7 +161,7 @@ After processing the dataset of 11,450 papers, the following results were obtain
 | Convolutional Neural Network (CNN) | 171          |
 | LSTM                            | 149             |
 
-### Reasons for Irrelevant Papers Exclusion
+### Reasons for Irrelevant Papers' Exclusion
 
 | **Exclusion Reason**                | **Count** |
 |-------------------------------------|-----------|
