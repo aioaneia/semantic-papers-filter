@@ -177,28 +177,28 @@ The total time taken to process 11,450 papers was **732.46 seconds**.
 ## Results Visualization
 
 ### Method Type Percentages
-![Method Type Percentages](https://github.com/aioaneia/semantic-papers-filter/blob/main/results/plots/method_type_percentages.html)
+![Method Type Percentages](results/plots/method_type_percentages.png)
 
 ### Method Type Distribution Over Time
-![Method Types Over Time](results/plots/method_types_over_time.html)
+![Method Types Over Time](results/plots/method_types_over_time.png)
 
 ### Top method names over Time
-![Method Names Over Time](https://github.com/aioaneia/semantic-papers-filter/blob/main/results/plots/method_names_over_time.html)
+![Method Names Over Time](results/plots/method_names_over_time.png)
 
 ### Distribution of irrelevant papers
-![Irrelevant Papers Distribution](https://github.com/aioaneia/semantic-papers-filter/blob/main/results/plots/irrelevant_papers_by_reasoning.png)
+![Irrelevant Papers Distribution](results/plots/irrelevant_papers_by_reasoning.png)
 
 ### Word Cloud of Method Names
-![Method Names Word Cloud](https://github.com/aioaneia/semantic-papers-filter/blob/main/results/plots/word_cloud_method_name.html)
+![Method Names Word Cloud](results/plots/word_cloud_method_name.png)
 
 ## Distribution of Jouranls over Time
-![Journal Distribution Over Time](https://github.com/aioaneia/semantic-papers-filter/blob/main/results/plots/publication_distribution_per_journal.html)
+![Journal Distribution Over Time](results/plots/publication_distribution_per_journal.png)
 
 ## Publications per Journal Over Time
-![Publications per Journal Over Time](https://github.com/aioaneia/semantic-papers-filter/blob/main/results/plots/publications_per_journal_over_time.html)
+![Publications per Journal Over Time](results/plots/publications_per_journal_over_time.png)
 
 ## Comparison of top journals in relevant and irrelevant papers
-![Top Journals Comparison](results/plots/journal_comparison.html)
+![Top Journals Comparison](results/plots/journal_comparison.png)
 
 ## Limitations and Future Work
 - Limitations:
