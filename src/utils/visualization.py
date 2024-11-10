@@ -288,54 +288,6 @@ class StatsVisualizer:
 
 
     @staticmethod
-    def plot_irrelevance_scores_distribution(irrelevant_df: pd.DataFrame, output_dir):
-        """
-        Plot the distribution of scores leading to irrelevance.
-
-        Parameters:
-            irrelevant_df: DataFrame containing irrelevant papers with scores
-            output_dir: Directory to save the plot
-        """
-        # Assuming 'scores' column is a dictionary with keys like 'architecture', 'task', 'context'
-        # We need to extract these into separate columns
-        scores_df = pd.json_normalize(irrelevant_df['scores'])
-        combined_df = pd.concat([irrelevant_df.reset_index(drop=True), scores_df], axis=1)
-
-        # Melt the DataFrame to plot distributions
-        scores_melted = combined_df.melt(
-            id_vars=['PMID'],
-            value_vars=['architecture', 'task', 'context'],
-            var_name='Score Type',
-            value_name='Score'
-        )
-
-        fig = px.histogram(
-            scores_melted,
-            x='Score',
-            color='Score Type',
-            barmode='overlay',
-            histnorm='percent',
-            nbins=20,
-            labels={
-                'Score': 'Score Value',
-                'percent': 'Percentage of Papers',
-                'Score Type': 'Score Type'
-            },
-            title='Distribution of Irrelevance Scores',
-        )
-
-        fig.update_layout(
-            xaxis_title='Score Value',
-            yaxis_title='Percentage of Papers',
-            legend_title_text='Score Type',
-            title={'x': 0.5},
-        )
-
-        fig.write_html(os.path.join(output_dir, 'irrelevance_scores_distribution.html'))
-        fig.show()
-
-
-    @staticmethod
     def plot_method_occurrence_network(relevant_df: pd.DataFrame, output_dir, text_column: str = 'Method Name'):
         # Extract method names
         relevant_df[text_column] = relevant_df[text_column].fillna('Not specified')

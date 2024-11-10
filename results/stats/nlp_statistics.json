@@ -1,0 +1,41 @@
+{
+  "total_relevant_papers": 1932,
+  "total_papers_processed": 11450,
+  "relevance_percentage": 16.87,
+  "method_type_counts": {
+    "other": 980,
+    "computer_vision": 561,
+    "text_mining": 211,
+    "both": 180
+  },
+  "method_type_percentages": {
+    "other": 50.72,
+    "computer_vision": 29.04,
+    "text_mining": 10.92,
+    "both": 9.32
+  },
+  "top_method_names": {
+    "neural network": 955,
+    "deep learning": 796,
+    "machine learning": 652,
+    "artificial intelligence": 240,
+    "artificial neural network": 236,
+    "gan": 194,
+    "convolutional neural network": 171,
+    "lstm": 149,
+    "cnn": 139,
+    "deep neural": 128,
+    "using deep learning": 72,
+    "transformer": 68,
+    "recurrent neural network": 65,
+    "rnn": 65,
+    "encoder": 61
+  },
+  "reasoning_counts": {
+    "context domain not found": 6501,
+    "deep learning context not found": 1431,
+    "only medical context found": 970,
+    "negative keywords found": 616
+  },
+  "time_taken": 732.4558091163635
+}

@@ -1,11 +1,11 @@
 
 # LLM Model IDs
-OLLAMA_MODEL_ID: "llama3.2:3b" # 3B parameter model
+OLLAMA_MODEL_ID: "llama3.2:3b"
 
 # Dataset paths
 DATASET_PATH: ../data/collection_with_abstracts.csv
 
-DATASET_LIMIT: 120
+DATASET_LIMIT: 0 # 0 for no limit
 
 # Test dataset path
 TEST_DATASET_PATH: ../../data/test_collection_with_abstracts.xlsx
@@ -17,4 +17,4 @@ EVALUATION_DATASET_PATH: ../../data/eval_collection_with_abstracts.xlsx
 SPACY_MODEL: en_core_web_lg
 
 # LLM Model hyperparameters
-TRANSFORMER_MODEL: all-MiniLM-L6-v2
+TRANSFORMER_MODEL: all-MiniLM-L6-v2 # all-mpnet-base-v2, all-MiniLM-L6-v2

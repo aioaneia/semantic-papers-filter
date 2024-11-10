@@ -21,7 +21,7 @@ class ClassificationResult:
     reasoning: str
 
 
-class PaperClassifier:
+class LLMSemanticFilter:
     def __init__(self):
         """Initialize the paper classifier with configuration."""
 
@@ -50,7 +50,7 @@ class PaperClassifier:
 
         return ChatOpenAI(
             openai_api_key='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',
-            model_name='o1-mini',  # o1-preview and o1-mini,
+            model_name='o1-mini',  # o1-preview and o1-mini, gpt-4o
             temperature=1.0,
         )
 
@@ -61,31 +61,31 @@ class PaperClassifier:
         """
 
         CLASSIFICATION_TEMPLATE = """
-        You are an expert in analyzing computer science research papers in Virology/Epidemiology. 
-        Your task is to carefully analyze the input paper and classify its computational methods.
+        You are an expert in analyzing computer science research papers related to virology and epidemiology.
+        Your task is to carefully analyze the input paper to identify if it discusses deep learning or artificial intelligence methods in the context of virology or epidemiology.
 
         **PRIMARY CRITERIA:**
         1. **Deep Learning Focus:**
-           - Look for **explicit mentions** of neural networks, deep learning architectures, or AI-based approaches.
-           - Consider only papers that apply these methods to **virology/epidemiology** problems.
+           - Check if the paper discusses deep learning or AI methods.
+           - Consider only papers that uses or discusses these methods in the context of virology or epidemiology.
            - Exclude papers that mention these terms only in passing, in the introduction, or as future work.
    
         2. **Method Classification:**
-           - **TEXT MINING:**
+           - **text_mining:**
              * NLP for genomic sequences
              * Text analysis of clinical records
              * Language models for medical literature
              * Social media analysis for disease tracking
 
-           - **COMPUTER VISION:**
+           - **computer_vision:**
              * Medical image analysis (X-rays, CT scans)
              * Microscopy image processing
              * Pathogen detection in images
              * Visual diagnosis systems
 
-           - **BOTH:** When both text and image analysis are central to the method
+           - **both:** When both text and image analysis are central to the method
 
-           - **OTHER:** Novel deep learning approaches that don't fit above categories
+           - **other:** Novel deep learning approaches that don't fit above categories
 
         3. **Method Identification:**
            Look for specific architecture names like:
@@ -93,9 +93,13 @@ class PaperClassifier:
            - For Vision: CNN, ResNet, U-Net, YOLO
            - General: Neural Networks, Deep Learning, Transfer Learning
 
+        4. **Reasoning:**
+              Provide the main field of the paper followed by a brief explanation of why it is relevant or irrelevant (max 50).
+        
+        
         **EXCLUSION CRITERIA:**
         - Papers using deep learning or AI methods in domains **other than** virology or epidemiology (e.g., urban planning, energy efficiency).
-        - Traditional statistical methods or machine learning without deep learning or neural networks.
+        - Traditional statistical methods or machine learning without deep learning, neural networks or AI.
         - Pure epidemiological studies without computational methods.
         - Clinical trials or medical studies without AI or computational components.
         - Medical research not involving computational methods (e.g., purely laboratory-based studies).
@@ -108,7 +112,7 @@ class PaperClassifier:
             "relevant": true,
             "method_type": "text_mining",
             "method_name": "BERT",
-            "reasoning": "Uses BERT model to analyze clinical text data for viral mutations"
+            "reasoning": "virology, uses BERT model to analyze clinical text data for viral mutations"
         }}
 
         Paper: "Deep learning-based analysis of urban traffic patterns for smart city planning"
@@ -116,7 +120,7 @@ class PaperClassifier:
             "relevant": false,
             "method_type": "",
             "method_name": "",
-            "reasoning": "Uses deep learning but in urban planning, not virology or epidemiology"
+            "reasoning": "urban planning, uses deep learning but in urban planning context, not virology or epidemiology"
         }}
 
         Paper: "Clinical study of computer vision syndrome in hospital workers"
@@ -124,7 +128,7 @@ class PaperClassifier:
             "relevant": false,
             "method_type": "",
             "method_name": "",
-            "reasoning": "Medical study about eye condition, not about computational methods"
+            "reasoning": "ophthalmology, unrelated to computer vision techniques in AI or deep learning"
         }}
 
         Paper: "Convolutional Neural Networks for Breast Cancer Detection in Mammograms"
@@ -132,11 +136,11 @@ class PaperClassifier:
             "relevant": false,
             "method_type": "",
             "method_name": "",
-            "reasoning": "Applies deep learning to oncology, not virology or epidemiology"
+            "reasoning": "oncology, uses CNNs but not in virology or epidemiology context"
         }}
 
         Important Notes:
-        - A paper is considered **relevant** only if it **explicitly mentions** the use of deep learning or AI methods **applied specifically** in the context of **virology** or **epidemiology**.
+        - A paper is considered **relevant** only if it **mentions** the use of deep learning or AI methods **applied specifically** in the context of **virology** or **epidemiology**.
         - If the paper uses these methods in **any other field** (e.g., urban planning, energy efficiency, oncology, cardiology), it should be marked as **irrelevant**, even if it involves medical imaging or biological data.
         - Do **not** assume relevance based on the use of general medical terms; focus on the specific domains of virology and epidemiology.
 
@@ -145,10 +149,10 @@ class PaperClassifier:
 
         Provide your analysis in the following JSON format:
         {{
-            "relevant": boolean,     // True if uses deep learning/AI in virology/epidemiology
-            "method_type": string,   // "text_mining", "computer_vision", "both", or "other" (empty if irrelevant)
-            "method_name": string,   // Specific method names used (empty if irrelevant)
-            "reasoning": string      // Brief explanation (max 100 chars) for your filtering decisions
+            "relevant": boolean,     
+            "method_type": string,   
+            "method_name": string,   
+            "reasoning": string
         }}
         """
 
@@ -220,7 +224,7 @@ async def main():
     """
 
     try:
-        classifier = PaperClassifier()
+        classifier = LLMSemanticFilter()
 
         # Example paper text
         text = """

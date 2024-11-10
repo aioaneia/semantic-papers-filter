@@ -42,7 +42,7 @@ class Pipeline:
             self.logger.info(f'Data loaded in {time.time() - start_time:.2f} seconds.\n')
 
             # Limit the number of papers if specified
-            if limit is not None:
+            if limit > 0:
                 df = df.head(limit)
                 self.logger.info(f'Data limited to {limit} papers.\n')
 
@@ -201,8 +201,6 @@ class Pipeline:
 
             ## Plotting relevant vs irrelevant papers comparison
             self.visualizer.plot_journal_comparison(relevant_df, irrelevant_df, output_dir)
-
-            self.visualizer.plot_irrelevance_scores_distribution(irrelevant_df, output_dir)
 
             ## A network plot of method occurrence in relevant papers (Method Name)
             # self.visualizer.plot_method_occurrence_network(relevant_df, output_dir, text_column='Method Name')
