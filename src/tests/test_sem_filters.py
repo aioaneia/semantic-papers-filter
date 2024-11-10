@@ -1,10 +1,13 @@
 
 import time
 import asyncio
+from typing import Hashable
+
 import yaml
 import logging
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 from tqdm import tqdm
 from sklearn.metrics import classification_report, confusion_matrix, f1_score
 
@@ -21,23 +24,16 @@ class SemanticFilterTest:
     """
 
     def __init__(self):
-        self.semantic_filter = SemanticFilter(
-            spacy_model='en_core_web_lg',            # 'en_core_web_trf'
-            transformer_model='all-MiniLM-L6-v2'  # 'all-mpnet-base-v2', all-MiniLM-L6-v2
-        )
         self.data_loader = DataLoader()
         self.logger = logging.getLogger(__name__)
 
-        # Load configuration
         with open('../../config.yaml', 'r') as config_file:
             self.config = yaml.safe_load(config_file)
 
-
-    def test_one(self):
-        text = "This paper introduces a convolutional neural network for virus detection."
-        is_relevant, scores, reasoning = self.semantic_filter.is_semantic_relevant_by_pattern_matching(text)
-
-        assert is_relevant == True
+        self.semantic_filter = SemanticFilter(
+            spacy_model='en_core_web_lg',
+            transformer_model='all-MiniLM-L6-v2'
+        )
 
 
     def test_two(self):
@@ -171,14 +167,20 @@ class SemanticFilterTest:
 
         df = self.data_loader.load_xlsx_data(self.config['TEST_DATASET_PATH'])
 
-        # Initialize new columns for NLP predictions
-        df['Is Relevant Pattern'] = False
+        # Initialize new columns for predictions
+        df['Is Relevant Pattern']    = False
         df['Is Relevant Similarity'] = False
-        df['Is Relevant LLM'] = False
-        df['Reasoning'] = ''
+        df['Is Relevant LLM']        = False
 
-        df['Method Type'] = ''
-        df['Method Name'] = ''
+        df['Reasoning Pattern']    = ''
+        df['Reasoning Similarity'] = ''
+        df['Reasoning LLM']        = ''
+
+        df['Method Type Pattern']    = ''
+        df['Method Type LLM']        = ''
+
+        df['Method Name Pattern']    = ''
+        df['Method Name LLM']        = ''
 
         self.logger.info('Starting semantic filtering...')
 
@@ -198,7 +200,7 @@ class SemanticFilterTest:
 
             # Semantic Similarity Method for Semantic Filtering
             start_time = time.time()
-            is_relevant_similarity, similarity_scores, reasoning_pattern = self.semantic_filter.is_semantic_relevant_by_similarity(combined_text)
+            is_relevant_similarity, similarity_scores, reasoning_similarity = self.semantic_filter.is_semantic_relevant_by_similarity(combined_text)
             similarity_time = time.time() - start_time
 
             # LLM Method for Semantic Filtering
@@ -216,9 +218,16 @@ class SemanticFilterTest:
             df.at[index, 'Is Relevant Pattern']    = is_relevant_pattern
             df.at[index, 'Is Relevant Similarity'] = is_relevant_similarity
             df.at[index, 'Is Relevant LLM']        = result.relevant
-            df.at[index, 'Reasoning']              = result.reasoning
-            df.at[index, 'Method Type']            = result.method_type
-            df.at[index, 'Method Name']            = result.method_name
+
+            df.at[index, 'Reasoning Pattern']    = reasoning_pattern
+            df.at[index, 'Reasoning Similarity'] = reasoning_similarity
+            df.at[index, 'Reasoning LLM']        = result.reasoning
+
+            df.at[index, 'Method Type Pattern'] = method_type_pattern
+            df.at[index, 'Method Type LLM']     = result.method_type
+
+            df.at[index, 'Method Name Pattern'] = method_name_pattern
+            df.at[index, 'Method Name LLM']     = result.method_name
 
             self.logger.info("=====================")
             self.logger.info(f'Paper {index + 1}/{len(df)}')
@@ -237,6 +246,7 @@ class SemanticFilterTest:
             self.logger.info(f'Is relevant by pattern matching: {is_relevant_pattern}')
             self.logger.info(f'Is relevant by similarity:       {is_relevant_similarity}')
             self.logger.info(f'Is relevant by LLM:              {result.relevant}')
+
             self.logger.info(f'Reasoning by LLM:                {result.reasoning}')
 
             self.logger.info(f'Method type: {result.method_type}')
@@ -357,8 +367,6 @@ class SemanticFilterTest:
 
 if __name__ == '__main__':
     tester = SemanticFilterTest()
-
-    tester.test_one()
 
     # tester.test_two()
 

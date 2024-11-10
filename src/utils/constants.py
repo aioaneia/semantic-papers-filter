@@ -71,11 +71,11 @@ class Constants:
             'monkeypox',
         },
         'epidemiology': {
-            'epidemiology', 'epidemiological', 'disease spread', 'disease transmission',
+            'epidemiology', 'epidemiological', 'disease spread', 'disease transmission', 'infectious disease',
             'disease modeling', 'public health', 'contact tracing', 'disease surveillance',
-            'incidence', 'prevalence', 'population health', 'health statistics',
-            'risk factors', 'mortality', 'morbidity', 'case fatality rate',
-            'disease outbreak', 'epidemic curve', 'reproduction number'
+            'prevalence of infection', 'population health', 'health statistics',
+            'disease outbreak', 'epidemic curve', 'reproduction number',
+            'infectious disease modeling', 'disease dynamics', 'disease control',
         }
     }
 

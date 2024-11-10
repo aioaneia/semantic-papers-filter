@@ -1,4 +1,3 @@
-
 import sys
 import spacy
 import pandas as pd
@@ -21,20 +20,19 @@ class SemanticFilter:
         Args: spacy_model: Name of the spaCy model to use
         """
         # Load spaCy model and SentenceTransformer
-        self.nlp               = self.load_spacy_model(spacy_model)
-        self.transformer       = SentenceTransformer(transformer_model)
+        self.nlp = self.load_spacy_model(spacy_model)
+        self.transformer = SentenceTransformer(transformer_model)
 
         # Embed domain-specific sentences for semantic relevance
-        self.dl_embeddings     = self.transformer.encode(Constants.DL_SENTENCES, convert_to_tensor=True)
+        self.dl_embeddings = self.transformer.encode(Constants.DL_SENTENCES, convert_to_tensor=True)
         self.domain_embeddings = self.transformer.encode(Constants.DOMAIN_SENTENCES, convert_to_tensor=True)
 
         # Initialize matchers
-        self.dl_matcher        = self.initialize_dl_matcher()
-        self.domain_matchers   = self.initialize_domain_matchers()
-        self.medical_matcher   = self.initialize_medical_matcher()
-        self.method_matchers   = self.initialize_method_matchers()
-        self.negative_matcher  = self.initialize_negative_matcher()
-
+        self.dl_matcher = self.initialize_dl_matcher()
+        self.domain_matchers = self.initialize_domain_matchers()
+        self.medical_matcher = self.initialize_medical_matcher()
+        self.method_matchers = self.initialize_method_matchers()
+        self.negative_matcher = self.initialize_negative_matcher()
 
     @staticmethod
     def load_spacy_model(model_name) -> Language:
@@ -59,7 +57,6 @@ class SemanticFilter:
                 print(f"Failed to install spaCy model: {model_name}")
                 raise
 
-
     def initialize_dl_matcher(self) -> PhraseMatcher:
         """
         Initialize and configure spaCy's PhraseMatcher for deep learning patterns.
@@ -76,7 +73,6 @@ class SemanticFilter:
 
         return matcher
 
-
     def initialize_domain_matchers(self) -> Dict[str, PhraseMatcher]:
         """
         Initialize matchers for domain-specific patterns.
@@ -91,7 +87,6 @@ class SemanticFilter:
 
         return domain_matchers
 
-
     def initialize_medical_matcher(self) -> PhraseMatcher:
         """
         Initialize PhraseMatcher for medical terms to filter out irrelevant papers.
@@ -101,7 +96,6 @@ class SemanticFilter:
         matcher.add("MEDICAL", patterns)
 
         return matcher
-
 
     def initialize_method_matchers(self) -> Dict[str, PhraseMatcher]:
         """
@@ -119,7 +113,6 @@ class SemanticFilter:
 
         return method_matchers
 
-
     def initialize_negative_matcher(self) -> PhraseMatcher:
         """
         Initialize PhraseMatcher for negative keywords to filter out irrelevant papers.
@@ -131,7 +124,6 @@ class SemanticFilter:
         matcher.add("NEGATIVE_KEYWORD", negative_patterns)
 
         return matcher
-
 
     def is_semantic_relevant_by_similarity(self, text: str) -> Tuple[bool, Dict[str, float], str]:
         """
@@ -171,7 +163,6 @@ class SemanticFilter:
 
         return is_relevant, scores, reason
 
-
     def is_semantic_relevant_by_pattern_matching(self, text: str) -> Tuple[bool, Dict[str, float], str]:
         """
         Check if text is semantically relevant using spaCy's matcher.
@@ -181,16 +172,16 @@ class SemanticFilter:
         """
         # Check for missing or invalid text
         if pd.isna(text) or not isinstance(text, str):
-            return False, { 'architecture': 0.0, 'task': 0.0, 'context': 0.0 }, 'Invalid text'
+            return False, {'architecture': 0.0, 'task': 0.0, 'context': 0.0}, 'invalid text input'
 
         # Check if the text contains negative keywords and no medical context before proceeding
         # Do not count as negative if in positive context
         if self.contains_negative_keywords(text) and not self.contains_medical_terms(text):
-            return False, { 'architecture': 0.0, 'task': 0.0, 'context': 0.0 }, 'Negative keywords found'
+            return False, {'architecture': 0.0, 'task': 0.0, 'context': 0.0}, 'negative keywords found'
 
         # First check for medical context that would invalidate the paper
         if self.is_medical_context(text):
-            return False, {'architecture': 0.0, 'task': 0.0, 'context': 0.0}, 'Only medical context found'
+            return False, {'architecture': 0.0, 'task': 0.0, 'context': 0.0}, 'only medical context found'
 
         try:
             doc = self.nlp(text.lower())
@@ -218,20 +209,24 @@ class SemanticFilter:
                 domain_matches.extend(matcher(doc))
 
             if not domain_matches:
-                return False, dict(scores), 'irrelevant domain'
+                return False, dict(scores), 'context domain not found'
 
+            # Determine relevance based on scores and domain matches
             is_relevant = (
-                    (scores['architecture'] >= 0.3 and scores['task'] >= 0.3) or
-                    (scores['architecture'] >= 0.6 and scores['context'] >= 0.1) or
-                    (scores['task'] >= 0.6 and scores['context'] >= 0.1)
+                    ((scores['architecture'] >= 0.3 and scores['task'] >= 0.3) or
+                     (scores['architecture'] >= 0.6 and scores['context'] >= 0.1) or
+                     (scores['task'] >= 0.6 and scores['context'] >= 0.1)) and
+                    len(domain_matches) > 0
             )
 
-            return is_relevant, dict(scores), 'relevant domain and patterns'
+            if not is_relevant:
+                return False, dict(scores), 'deep learning context not found'
+
+            return True, dict(scores), 'deep learning context found'
 
         except Exception as e:
             print(f"Error in is_semantic_relevant: {e}")
             return False, {'architecture': 0.0, 'task': 0.0, 'context': 0.0}, 'Error during processing'
-
 
     def is_medical_context(self, text: str) -> bool:
         """
@@ -248,7 +243,6 @@ class SemanticFilter:
 
         return len(medical_matches) > 0 and len(computational_matches) == 0
 
-
     def contains_medical_terms(self, text: str) -> bool:
         """
         Check if the text contains medical terms.
@@ -264,7 +258,6 @@ class SemanticFilter:
 
         return len(matches) > 0
 
-
     def contains_negative_keywords(self, text: str) -> bool:
         """
         Check if the text contains negative keywords.
@@ -277,7 +270,6 @@ class SemanticFilter:
         matches = self.negative_matcher(doc)
 
         return len(matches) > 0
-
 
     def classify_method(self, text: str) -> str:
         """
@@ -298,7 +290,7 @@ class SemanticFilter:
                 scores[method_type] = len(matches)
 
             # Determine method type based on the matches
-            text_mining     = scores.get(Constants.TOPICS['text_mining'], 0) > 0
+            text_mining = scores.get(Constants.TOPICS['text_mining'], 0) > 0
             computer_vision = scores.get(Constants.TOPICS['computer_vision'], 0) > 0
 
             if text_mining and computer_vision:
@@ -313,7 +305,6 @@ class SemanticFilter:
         except Exception as e:
             print(f"Error in classify_method: {e}")
             return "other"
-
 
     def extract_method_name(self, text: str) -> str:
         """
@@ -389,7 +380,6 @@ class SemanticFilter:
             print(f"Error in extract_method_name: {e}")
             return ""
 
-
     @staticmethod
     def clean_method_name(method_candidate: str) -> str:
         """
@@ -403,8 +393,8 @@ class SemanticFilter:
         """
         # Remove unnecessary characters and whitespace
         method_candidate = method_candidate.strip(' .,;-:"\'')
-        return method_candidate
 
+        return method_candidate
 
     @staticmethod
     def is_valid_method_name(text: str) -> bool:

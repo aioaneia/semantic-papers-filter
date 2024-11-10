@@ -6,11 +6,12 @@ from pathlib import Path
 
 import src.utils.file_utils as file_utils
 
-from src.data.data_loader        import DataLoader
-from src.data.preprocessor       import Preprocessor
-from src.pipelines.pipeline      import Pipeline
-from src.filters.semantic_filter import SemanticFilter
-from src.utils.visualization     import StatsVisualizer
+from src.data.data_loader            import DataLoader
+from src.data.preprocessor           import Preprocessor
+from src.utils.visualization         import StatsVisualizer
+from src.pipelines.pipeline          import Pipeline
+from src.filters.semantic_filter     import SemanticFilter
+
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -21,7 +22,10 @@ class PaperFilteringApp:
     """
     def __init__(self, config_path: str):
         """
-        Initialize the application with configuration.
+        Initialize the application with the specified configuration file and method.
+
+        Args:
+            config_path (str): Path to the configuration file
         """
         self.config = file_utils.load_config(config_path)
 
@@ -29,13 +33,15 @@ class PaperFilteringApp:
 
         self.logger.setLevel(logging.INFO)
 
+        self.semantic_filter = SemanticFilter(
+            self.config['SPACY_MODEL'],
+            self.config['TRANSFORMER_MODEL']
+        )
+
         self.pipeline = Pipeline(
             data_loader=DataLoader(),
             preprocessor=Preprocessor(),
-            semantic_filter=SemanticFilter(
-                self.config['SPACY_MODEL'],
-                self.config['TRANSFORMER_MODEL']
-            ),
+            semantic_filter=self.semantic_filter,
             visualizer=StatsVisualizer()
         )
 

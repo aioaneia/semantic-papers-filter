@@ -53,10 +53,10 @@ class Pipeline:
             start_time = time.time()
 
             # Combine title and abstract for processing
-            df['combined_text'] = df['clean_title'] + ' ' + df['clean_abstract']
+            df['combined_text'] = df['clean_title'] + ' ' + df['clean_abstract'] + ' ' + df['Journal/Book']
 
             # Apply semantic filtering to the combined text
-            df['is_relevant'], df['scores'] = zip(*df['combined_text'].apply(
+            df['is_relevant'], df['scores'], df['reasoning'] = zip(*df['combined_text'].apply(
                 lambda x: self.semantic_filter.is_semantic_relevant_by_pattern_matching(x)
                 if isinstance(x, str) else (False, {})
             ))
@@ -74,12 +74,12 @@ class Pipeline:
             # Select the columns to keep in the final output
             columns_to_keep_for_relevant_df = [
                 'PMID', 'Title', 'Abstract', 'Publication Year', 'Journal/Book', 'First Author',
-                'Method Type', 'Method Name', 'scores',
+                'Method Type', 'Method Name', 'scores', 'reasoning'
             ]
 
             columns_to_keep_for_irrelevant_df = [
                 'PMID', 'Title', 'Abstract', 'Publication Year', 'Journal/Book', 'First Author',
-                'scores',
+                'scores', 'reasoning'
             ]
 
             # Keep only the specified columns
@@ -103,7 +103,7 @@ class Pipeline:
 
         except Exception as e:
             self.logger.error(f"Error in process_papers: {e}")
-            raise
+            raise e
 
 
     def generate_statistics(self, relevant_df: pd.DataFrame, irrelevant_df: pd.DataFrame, output_file_path: str, time_taken: float) -> dict:
@@ -121,41 +121,36 @@ class Pipeline:
         total_papers_processed = total_relevant_papers + len(irrelevant_df)
 
         # Method type distribution
-        method_counts = relevant_df['Method Type'].value_counts().to_dict()
-        method_percentages = {
+        method_type_counts = relevant_df['Method Type'].value_counts().to_dict()
+        method_type_percentages = {
             k: round((v / total_relevant_papers) * 100, 2)
-            for k, v in method_counts.items()
+            for k, v in method_type_counts.items()
         }
 
         # Top method names overall
-        relevant_df_non_empty_methods = relevant_df[
-            relevant_df['Method Name'].notna() & (relevant_df['Method Name'] != '')]
-        top_methods_overall = relevant_df_non_empty_methods['Method Name'].value_counts().head(10).to_dict()
+        relevant_df_method_names = relevant_df[relevant_df['Method Name'].notna() & (relevant_df['Method Name'] != '')]
 
+        top_method_names = (
+            relevant_df_method_names['Method Name']
+                .apply(self.clean_method_names)
+                .explode()
+                .value_counts()
+                .head(15)
+                .to_dict()
+        )
 
-        # Prepare 'year' column
-        relevant_df['year'] = pd.to_numeric(relevant_df['Publication Year'], errors='coerce')
-        relevant_df = relevant_df.dropna(subset=['year'])
-        relevant_df['year'] = relevant_df['year'].astype(int)
-
-        # Top method names by year
-        top_methods_by_year = {}
-        for year in sorted(relevant_df['year'].unique()):
-            year_df = relevant_df[relevant_df['year'] == year]
-            methods_in_year = year_df['Method Name'].dropna().replace('', pd.NA).dropna()
-            top_methods = methods_in_year.value_counts().head(5).to_dict()
-            if top_methods:
-                top_methods_by_year[int(year)] = top_methods
+        # Aggregate reasoning for irrelevant papers
+        reasoning_counts = irrelevant_df['reasoning'].value_counts().to_dict()
 
         stats = {
-            'total_relevant_papers': total_relevant_papers,
-            'total_papers_processed': total_papers_processed,
-            'relevance_percentage': round((total_relevant_papers / total_papers_processed) * 100, 2),
-            'method_counts': method_counts,
-            'method_percentages': method_percentages,
-            'top_method_names_overall': top_methods_overall,
-            'top_method_names_by_year': top_methods_by_year,
-            'time_taken': time_taken,
+            'total_relevant_papers':   total_relevant_papers,
+            'total_papers_processed':  total_papers_processed,
+            'relevance_percentage':    round((total_relevant_papers / total_papers_processed) * 100, 2),
+            'method_type_counts':      method_type_counts,
+            'method_type_percentages': method_type_percentages,
+            'top_method_names':        top_method_names,
+            'reasoning_counts':        reasoning_counts,
+            'time_taken':              time_taken,
         }
 
         with open(output_file_path, "w") as f:
@@ -166,18 +161,30 @@ class Pipeline:
         return stats
 
 
+    @staticmethod
+    def clean_method_names(method_names_str):
+        method_names_str = method_names_str.lower()
+
+        tokens = [token.strip() for token in method_names_str.split(',')]
+
+        standardized_methods = []
+        for token in tokens:
+            standardized_methods.append(token)
+
+        # Remove duplicates
+        unique_methods = list(set(standardized_methods))
+
+        return unique_methods
+
+
     def plot_statistics(self, relevant_df: pd.DataFrame, irrelevant_df: pd.DataFrame,
                         statistics: dict, output_dir: str):
         """
         Plot statistics using the relevant papers DataFrame and statistics dictionary.
         """
         try:
-            method_counts      = statistics['method_counts']
-            method_percentages = statistics['method_percentages']
-            top_method_names   = statistics['top_method_names_overall']
-
-            # Prepare 'year' column
-            relevant_df['year'] = pd.to_numeric(relevant_df['Publication Year'], errors='coerce').fillna(0).astype(int)
+            method_percentages = statistics['method_type_percentages']
+            top_method_names   = statistics['top_method_names']
 
             self.visualizer.plot_method_type_percentage(method_percentages, output_dir)
 
@@ -195,15 +202,15 @@ class Pipeline:
             ## Plotting relevant vs irrelevant papers comparison
             self.visualizer.plot_journal_comparison(relevant_df, irrelevant_df, output_dir)
 
-            # self.visualizer.plot_irrelevant_papers_per_year(irrelevant_df, output_dir)
-
             self.visualizer.plot_irrelevance_scores_distribution(irrelevant_df, output_dir)
 
             ## A network plot of method occurrence in relevant papers (Method Name)
-            self.visualizer.plot_method_occurrence_network(relevant_df, output_dir, text_column='Method Name')
+            # self.visualizer.plot_method_occurrence_network(relevant_df, output_dir, text_column='Method Name')
 
             ## A cloud plot of method occurrence in relevant papers (Method Name)
             self.visualizer.plot_word_cloud(relevant_df, output_dir, text_column='Method Name')
+
+            self.visualizer.plot_irrelevant_papers_by_reasoning(irrelevant_df, output_dir)
 
             self.logger.info('Plots generated successfully.\n')
 

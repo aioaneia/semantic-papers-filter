@@ -13,37 +13,6 @@ class StatsVisualizer:
     """
     Class for visualizing statistics.
     """
-
-    @staticmethod
-    def plot_method_type_distribution(method_counts, output_dir):
-        """
-        Plot the distribution of method types as a bar chart.
-        """
-        methods = list(method_counts.keys())
-        counts = list(method_counts.values())
-
-        fig = px.bar(
-            x=methods,
-            y=counts,
-            labels={
-                'x': 'Method Type',
-                'y': 'Number of Papers'
-            },
-            title='Distribution of Method Types',
-        )
-
-        fig.update_layout(
-            xaxis_title='Method Type',
-            yaxis_title='Number of Papers',
-            title={'x': 0.5},  # Center the title
-        )
-
-        # Save the plot as an HTML file
-        output_path = os.path.join(output_dir, 'method_type_distribution.html')
-        fig.write_html(output_path)
-
-        fig.show()
-
     @staticmethod
     def plot_method_type_percentage(method_percentages, output_dir):
         """
@@ -67,10 +36,7 @@ class StatsVisualizer:
             title={'x': 0.5},
         )
 
-        # Save the plot as an HTML file
-        output_path = os.path.join(output_dir, 'method_type_percentages.html')
-        fig.write_html(output_path)
-
+        fig.write_html(os.path.join(output_dir, 'method_type_percentages.html'))
         fig.show()
 
 
@@ -80,7 +46,7 @@ class StatsVisualizer:
 
         for method_name in top_method_names.keys():
             method_data = results[results['Method Name'] == method_name]
-            papers_per_year = method_data.groupby('year').size().reset_index(name='counts')
+            papers_per_year = method_data.groupby('Publication Year').size().reset_index(name='counts')
             papers_per_year['Method Name'] = method_name
             method_data_list.append(papers_per_year)
 
@@ -89,12 +55,12 @@ class StatsVisualizer:
 
             fig = px.line(
                 all_method_data,
-                x='year',
+                x='Publication Year',
                 y='counts',
                 color='Method Name',
                 markers=True,
                 labels={
-                    'year': 'Publication Year',
+                    'Publication Year': 'Publication Year',
                     'counts': 'Number of Papers',
                     'Method Name': 'Method Name'
                 },
@@ -114,14 +80,14 @@ class StatsVisualizer:
                 tickformat='d'
             )
 
-            output_path = os.path.join(output_dir, 'method_trends_over_time.html')
-            fig.write_html(output_path)
+            fig.write_html(os.path.join(output_dir, 'method_trends_over_time.html'))
             fig.show()
         else:
             print("No method data available to plot trends.")
 
+
     @staticmethod
-    def plot_top_journals_by_method_type(relevant_df: pd.DataFrame, output_dir, top_n=10):
+    def plot_top_journals_by_method_type(relevant_df: pd.DataFrame, output_dir, top_n=5):
         """
         Plot the top journals for each method type.
         """
@@ -155,8 +121,9 @@ class StatsVisualizer:
             fig.write_html(output_path)
             fig.show()
 
+
     @staticmethod
-    def plot_top_authors(relevant_df: pd.DataFrame, output_dir, top_n=10):
+    def plot_top_authors(relevant_df: pd.DataFrame, output_dir, top_n=5):
         """
         Plot the top authors based on the number of papers published.
         """
@@ -181,12 +148,12 @@ class StatsVisualizer:
             xaxis_tickangle=-45
         )
 
-        output_path = os.path.join(output_dir, 'top_authors.html')
-        fig.write_html(output_path)
+        fig.write_html(os.path.join(output_dir, 'top_authors.html'))
         fig.show()
 
+
     @staticmethod
-    def plot_publications_per_journal_over_time(relevant_df: pd.DataFrame, output_dir, top_n=5):
+    def plot_publications_per_journal_over_time(relevant_df: pd.DataFrame, output_dir, top_n=7):
         """
         Plot the number of publications per year for the top journals.
         """
@@ -195,16 +162,16 @@ class StatsVisualizer:
         df_top_journals = relevant_df[relevant_df['Journal/Book'].isin(top_journals)]
 
         # Group by year and journal
-        publications_over_time = df_top_journals.groupby(['year', 'Journal/Book']).size().reset_index(name='counts')
+        publications_over_time = df_top_journals.groupby(['Publication Year', 'Journal/Book']).size().reset_index(name='counts')
 
         fig = px.line(
             publications_over_time,
-            x='year',
+            x='Publication Year',
             y='counts',
             color='Journal/Book',
             markers=True,
             labels={
-                'year': 'Publication Year',
+                'Publication Year': 'Publication Year',
                 'counts': 'Number of Papers',
                 'Journal/Book': 'Journal'
             },
@@ -224,12 +191,12 @@ class StatsVisualizer:
             tickformat='d'
         )
 
-        output_path = os.path.join(output_dir, 'publications_per_journal_over_time.html')
-        fig.write_html(output_path)
+        fig.write_html(os.path.join(output_dir, 'publications_per_journal_over_time.html'))
         fig.show()
 
+
     @staticmethod
-    def plot_publication_distribution_per_journal(relevant_df: pd.DataFrame, output_dir, top_n=10):
+    def plot_publication_distribution_per_journal(relevant_df: pd.DataFrame, output_dir, top_n=7):
         """
         Plot the distribution of publications across journals.
 
@@ -257,13 +224,12 @@ class StatsVisualizer:
             title={'x': 0.5},
         )
 
-        output_path = os.path.join(output_dir, 'publication_distribution_per_journal.html')
-        fig.write_html(output_path)
+        fig.write_html(os.path.join(output_dir, 'publication_distribution_per_journal.html'))
         fig.show()
 
 
     @staticmethod
-    def plot_journal_comparison(relevant_df: pd.DataFrame, irrelevant_df: pd.DataFrame, output_dir, top_n=10):
+    def plot_journal_comparison(relevant_df: pd.DataFrame, irrelevant_df: pd.DataFrame, output_dir, top_n=7):
         """
         Compare the top journals in relevant and irrelevant papers.
 
@@ -317,48 +283,9 @@ class StatsVisualizer:
             xaxis_tickangle=-45
         )
 
-        output_path = os.path.join(output_dir, 'journal_comparison.html')
-        fig.write_html(output_path)
+        fig.write_html(os.path.join(output_dir, 'journal_comparison.html'))
         fig.show()
 
-    @staticmethod
-    def plot_irrelevant_papers_per_year(irrelevant_df: pd.DataFrame, output_dir):
-        """
-        Plot the number of irrelevant papers per year.
-
-        Parameters:
-            irrelevant_df: DataFrame containing irrelevant papers
-            output_dir: Directory to save the plot
-        """
-        irrelevant_df['year'] = pd.to_numeric(irrelevant_df['Publication Year'], errors='coerce')
-        papers_per_year = irrelevant_df.groupby('year').size().reset_index(name='counts')
-
-        fig = px.bar(
-            papers_per_year,
-            x='year',
-            y='counts',
-            labels={
-                'year': 'Publication Year',
-                'counts': 'Number of Irrelevant Papers'
-            },
-            title='Number of Irrelevant Papers per Year',
-        )
-
-        fig.update_layout(
-            xaxis_title='Publication Year',
-            yaxis_title='Number of Papers',
-            title={'x': 0.5},
-        )
-
-        fig.update_xaxes(
-            dtick=1,
-            tickmode='linear',
-            tickformat='d'
-        )
-
-        output_path = os.path.join(output_dir, 'irrelevant_papers_per_year.html')
-        fig.write_html(output_path)
-        fig.show()
 
     @staticmethod
     def plot_irrelevance_scores_distribution(irrelevant_df: pd.DataFrame, output_dir):
@@ -404,8 +331,7 @@ class StatsVisualizer:
             title={'x': 0.5},
         )
 
-        output_path = os.path.join(output_dir, 'irrelevance_scores_distribution.html')
-        fig.write_html(output_path)
+        fig.write_html(os.path.join(output_dir, 'irrelevance_scores_distribution.html'))
         fig.show()
 
 
@@ -468,9 +394,9 @@ class StatsVisualizer:
                             margin=dict(b=20, l=5, r=5, t=40),
                         ))
 
-        output_path = os.path.join(output_dir, 'method_occurrence_network.html')
-        fig.write_html(output_path)
+        fig.write_html(os.path.join(output_dir, 'method_occurrence_network.html'))
         fig.show()
+
 
     @staticmethod
     def plot_word_cloud(relevant_df: pd.DataFrame, output_dir, text_column: str = 'Method Name'):
@@ -507,6 +433,37 @@ class StatsVisualizer:
         # Save the figure as an HTML file
         output_path = os.path.join(output_dir, f'word_cloud_{text_column.replace(" ", "_").lower()}.html')
         fig.write_html(file=output_path, auto_open=False)
+        fig.show()
 
-        # Show the figure
+
+    @staticmethod
+    def plot_irrelevant_papers_by_reasoning(irrelevant_df: pd.DataFrame, output_dir: str):
+        # Get the reasoning counts
+        reasoning_counts = irrelevant_df['reasoning'].value_counts().reset_index()
+        reasoning_counts.columns = ['reasoning', 'count']
+
+        # Create the bar chart using Plotly
+        fig = px.bar(
+            reasoning_counts,
+            x='reasoning',
+            y='count',
+            title='Number of Irrelevant Papers by Reasoning',
+            text='count',
+        )
+
+        # Update the layout for better appearance
+        fig.update_layout(
+            xaxis_title='Reasoning',
+            yaxis_title='Number of Papers',
+            xaxis_tickangle=-45,
+            margin=dict(l=50, r=50, t=80, b=150),
+            title_x=0.5,
+        )
+
+        # Adjust text position
+        fig.update_traces(textposition='outside')
+
+        # Save the figure to a file
+        output_file = os.path.join(output_dir, 'irrelevant_papers_by_reasoning.html')
+        fig.write_html(file=output_file, auto_open=False)
         fig.show()
