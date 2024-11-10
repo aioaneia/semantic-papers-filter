@@ -43,15 +43,9 @@ class LLMSemanticFilter:
         """
         Initialize the LLM model with the correct parameters.
         """
-        # return ChatOllama(
-        #     model='llama3.1:8b',  # llama3.2:3b, llama3.1:8b,
-        #     format='json',
-        # )
-
-        return ChatOpenAI(
-            openai_api_key='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',
-            model_name='o1-mini',  # o1-preview and o1-mini, gpt-4o
-            temperature=1.0,
+        return ChatOllama(
+            model='llama3.1:8b',  # llama3.2:3b, llama3.1:8b,
+            format='json',
         )
 
 

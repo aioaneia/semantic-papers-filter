@@ -80,7 +80,7 @@ class StatsVisualizer:
                 tickformat='d'
             )
 
-            fig.write_html(os.path.join(output_dir, 'method_trends_over_time.html'))
+            fig.write_image(os.path.join(output_dir, 'method_trends_over_time.png'))
             fig.show()
         else:
             print("No method data available to plot trends.")
@@ -116,9 +116,9 @@ class StatsVisualizer:
                 xaxis_tickangle=-45
             )
 
-            output_file = f'top_journals_{method.lower().replace(" ", "_")}.html'
+            output_file = f'top_journals_{method.lower().replace(" ", "_")}.png'
             output_path = os.path.join(output_dir, output_file)
-            fig.write_html(output_path)
+            fig.write_image(output_path)
             fig.show()
 
 
@@ -148,7 +148,7 @@ class StatsVisualizer:
             xaxis_tickangle=-45
         )
 
-        fig.write_html(os.path.join(output_dir, 'top_authors.html'))
+        fig.write_image(os.path.join(output_dir, 'top_authors.png'))
         fig.show()
 
 
@@ -191,7 +191,7 @@ class StatsVisualizer:
             tickformat='d'
         )
 
-        fig.write_html(os.path.join(output_dir, 'publications_per_journal_over_time.html'))
+        fig.write_image(os.path.join(output_dir, 'publications_per_journal_over_time.png'))
         fig.show()
 
 
@@ -224,7 +224,7 @@ class StatsVisualizer:
             title={'x': 0.5},
         )
 
-        fig.write_html(os.path.join(output_dir, 'publication_distribution_per_journal.html'))
+        fig.write_image(os.path.join(output_dir, 'publication_distribution_per_journal.png'))
         fig.show()
 
 
@@ -283,7 +283,7 @@ class StatsVisualizer:
             xaxis_tickangle=-45
         )
 
-        fig.write_html(os.path.join(output_dir, 'journal_comparison.html'))
+        fig.write_image(os.path.join(output_dir, 'journal_comparison.png'))
         fig.show()
 
 
@@ -346,7 +346,7 @@ class StatsVisualizer:
                             margin=dict(b=20, l=5, r=5, t=40),
                         ))
 
-        fig.write_html(os.path.join(output_dir, 'method_occurrence_network.html'))
+        fig.write_image(os.path.join(output_dir, 'method_occurrence_network.png'))
         fig.show()
 
 
@@ -383,8 +383,8 @@ class StatsVisualizer:
         )
 
         # Save the figure as an HTML file
-        output_path = os.path.join(output_dir, f'word_cloud_{text_column.replace(" ", "_").lower()}.html')
-        fig.write_html(file=output_path, auto_open=False)
+        output_path = os.path.join(output_dir, f'word_cloud_{text_column.replace(" ", "_").lower()}.png')
+        fig.write_image(output_path)
         fig.show()
 
 
@@ -416,6 +416,6 @@ class StatsVisualizer:
         fig.update_traces(textposition='outside')
 
         # Save the figure to a file
-        output_file = os.path.join(output_dir, 'irrelevant_papers_by_reasoning.html')
-        fig.write_html(file=output_file, auto_open=False)
+        output_file = os.path.join(output_dir, 'irrelevant_papers_by_reasoning.png')
+        fig.write_image(output_file)
         fig.show()

@@ -8,7 +8,7 @@ DATASET_PATH: ../data/collection_with_abstracts.csv
 DATASET_LIMIT: 0 # 0 for no limit
 
 # Test dataset path
-TEST_DATASET_PATH: ../../data/test_collection_with_abstracts.xlsx
+TEST_DATASET_PATH: ../../data/test_collection_with_abstracts_and_labels.xlsx
 
 # Evaluation dataset path
 EVALUATION_DATASET_PATH: ../../data/eval_collection_with_abstracts.xlsx
