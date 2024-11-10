@@ -235,9 +235,9 @@ These metrics were computed to assess the balance between efficiency and accurac
 ### Evaluation Metrics
 | Method              | Precision | Recall | F1-Score | Avg. Time per Paper | Expected Time for 10,000 Papers  |
 |---------------------|-----------|--------|----------|---------------------|----------------------------------|
-| Pattern Matching    | 1.00      | 1.00   | 1.00     | 0.09 seconds        |      929.46 seconds                   |
-| Semantic Similarity | 0.64      | 0.76   | 0.57     | 0.15 seconds        |  1,475.88 seconds                 |
-| LLM (Llama 3.2)     | 0.77      | 0.92   | 0.80     | 1.40 seconds        | 14,024.75 seconds                |
+| Pattern Matching    | 1.00      | 1.00   | 1.00     | 0.09 seconds        |           929.46 seconds                   |
+| Semantic Similarity | 0.64      | 0.76   | 0.57     | 0.15 seconds        | 1,475.88 seconds                |
+| LLM (Llama 3.2)     | 0.77      | 0.92   | 0.80     | 1.40 seconds        | 14,024.75 seconds              |
 
 ### Observations on Irrelevant Classifications
 Examples of misclassified or excluded papers highlight the importance of domain-specific understanding:
