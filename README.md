@@ -25,10 +25,10 @@ A lightweight semantic filtering system for identifying and classifying deep lea
 Identifying relevant papers in a specific domain can be challenging due to the vast amount of literature available. 
 Traditional keyword-based searches often yield noisy results, 
 requiring manual filtering to identify papers that focus on computational methods. 
-To address this issue, we developed a semantic filtering system that leverages natural language processing (NLP) techniques 
+To address this issue, a semantic filtering system has been  developed that leverages natural language processing (NLP) techniques 
 to automatically identify and classify deep learning papers in the fields of virology and epidemiology.
 
-Our system:
+The system proposed:
 - Implements semantic NLP techniques to filter out papers not utilizing deep learning approaches in virology/epidemiology.
 - Classifies relevant papers according to the method used: "text mining", "computer vision", "both", "other".
 - Extracts and reports the name of the method used for each relevant paper.
