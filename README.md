@@ -174,7 +174,7 @@ After processing the dataset of 11,450 papers, the following results were obtain
 
 The total time taken to process 11,450 papers was **732.46 seconds**.
 
-## Results Visualization
+## Visualization of the Results
 
 ### Method Type Percentages
 ![Method Type Percentages](results/plots/method_type_percentages.png)
