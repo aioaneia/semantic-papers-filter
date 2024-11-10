@@ -188,7 +188,7 @@ The total time taken to process 11,450 papers was **732.46 seconds**.
 ![Method Names Over Time](results/plots/method_names_over_time.html)
 
 ### Distribution of irrelevant papers
-![Irrelevant Papers Distribution](results/plots/irrelevant_papers_by_reasoning.html)
+![Irrelevant Papers Distribution](results/plots/irrelevant_papers_by_reasoning.png)
 
 ### Word Cloud of Method Names
 ![Method Names Word Cloud](results/plots/word_cloud_method_name.html)
