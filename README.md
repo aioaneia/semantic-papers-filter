@@ -205,7 +205,7 @@ The total time taken to process 11,450 papers was **732.46 seconds**.
   - Heuristic Bias: Current rules may exclude some valid deep learning papers if they don't match predefined patterns.
   - Time Complexity: LLM-based filtering, while effective, is slower and less suitable for large-scale datasets.
 
-- Future Work:
+- Future work:
   - Expand domain-specific patterns to improve recall.
   - Integrate unsupervised learning for dynamic pattern discovery.
   - Explore lightweight transformer models for faster processing.
