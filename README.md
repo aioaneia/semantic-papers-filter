@@ -110,8 +110,8 @@ semantic-virology-papers-filter/
 
 ### NLP Technique
 
-Our solution employs a rule-based natural language processing (NLP) approach using spaCy's capabilities:
-- **spaCy's Medium English Model (en_core_web_lg)** Provides robust tokenization, part-of-speech tagging, named entity recognition (NER), and word vectors for semantic similarity.
+The solution proposed employs a rule-based natural language processing (NLP) approach using spaCy's capabilities:
+- **spaCy's Large English Model (en_core_web_lg)** Provides robust tokenization, part-of-speech tagging and named entity recognition (NER).
 - **Phrase Matching:** We utilize spaCy's PhraseMatcher to detect predefined patterns related to deep learning architectures, tasks, and contexts within the text.
 - **Custom Patterns and Weights:**
   - **Defined Patterns:** In the constants.py file, we have curated lists of terms for architectures (e.g., "neural network", "deep learning"), tasks (e.g., "classification", "detection"), and contexts (e.g., "training", "model"). 
