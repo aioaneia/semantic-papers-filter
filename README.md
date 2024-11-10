@@ -176,25 +176,25 @@ The total time taken to process 11,450 papers was **732.46 seconds**.
 
 ## Visualization of the Results
 
-### Method Type Percentages
+### Method type percentages
 ![Method Type Percentages](results/plots/method_type_percentages.png)
 
-### Method Type Distribution Over Time
+### Method type distribution over time
 ![Method Types Over Time](results/plots/method_types_over_time.png)
 
-### Top method names over Time
+### Top method names over time
 ![Method Names Over Time](results/plots/method_names_over_time.png)
 
 ### Distribution of irrelevant papers
 ![Irrelevant Papers Distribution](results/plots/irrelevant_papers_by_reasoning.png)
 
-### Word Cloud of Method Names
+### Word cloud of method names
 ![Method Names Word Cloud](results/plots/word_cloud_method_name.png)
 
-## Distribution of Jouranls over Time
+## Distribution of journals over time
 ![Journal Distribution Over Time](results/plots/publication_distribution_per_journal.png)
 
-## Publications per Journal Over Time
+## Publications per journal over time
 ![Publications per Journal Over Time](results/plots/publications_per_journal_over_time.png)
 
 ## Comparison of top journals in relevant and irrelevant papers
