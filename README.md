@@ -46,12 +46,16 @@ Our approach surpasses traditional keyword filtering in several key aspects:
 
 ### Performance Metrics
 
-**Processing Efficiency:**
-- Average processing time: 0.09 seconds/paper
-- Total processing time for 11,450 papers: 732.46 seconds
-- Memory usage: <2GB RAM
+## Processing Efficiency
 
-**Classification Accuracy (Test Set of 50 Papers):**
+| Metric                        | MacBook Studio M1 Pro | Google Colab (T4 GPU) |
+|-------------------------------|-----------------------|-----------------------|
+| Average time per paper        | 0.09s                 | 0.14s                 |
+| Batch processing (1000 papers)| 72s                   | 138s                  |
+| Total dataset (11,450 papers) | 738s (~12 min)        | 1573s (~31 min)       |
+
+## Classification Accuracy (Test Set of 50 Papers)
+
 - Precision: 1.00
 - Recall: 1.00
 - F1-Score: 1.00
@@ -241,9 +245,11 @@ Testing both rule-based and LLM approaches revealed complementary strengths:
 ### Method Type Percentages 
 ![Method Type Percentages](results/plots/method_type_percentages.png)
 
+### Method Type Distribution Over Time
+![Method Type Distribution Over Time](results/plots/method_types_over_time.png)
 
 ### Top Method Names Over Time
-![Method Names Over Time](results/plots/method_names_over_time.png)
+![Method Names Over Time](results/plots/method_trends_over_time.png)
 
 The temporal analysis reveals several key trends:
 1. Early Phase (1993-2012)

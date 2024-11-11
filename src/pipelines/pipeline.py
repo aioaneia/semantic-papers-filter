@@ -3,7 +3,6 @@ import os
 import json
 import logging
 import time
-from distutils.command.config import config
 
 import pandas as pd
 
@@ -211,6 +210,8 @@ class Pipeline:
             self.visualizer.plot_word_cloud(relevant_df, output_dir, text_column='Method Name')
 
             self.visualizer.plot_irrelevant_papers_by_reasoning(irrelevant_df, output_dir)
+
+            self.visualizer.plot_method_types_over_time(relevant_df, output_dir)
 
             self.logger.info('Plots generated successfully.\n')
 

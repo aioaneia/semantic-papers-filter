@@ -1,5 +1,4 @@
 import json
-import os
 import logging
 
 from pathlib import Path
@@ -67,7 +66,7 @@ class PaperFilteringApp:
             stats = self.pipeline.generate_statistics(
                 relevant_df,
                 irrelevant_df,
-                os.path.join('../results/stats/', 'nlp_statistics.json'),
+                self.config['RESULTS_STATISTICS_PATH'],
                 time_taken
             )
 
@@ -102,7 +101,7 @@ class PaperFilteringApp:
         """
         Show statistics from the processed results.
         """
-        with open('../results/stats/nlp_statistics.json', 'r') as f:
+        with open(self.config['RESULTS_STATISTICS_PATH'], 'r') as f:
             stats = json.load(f)
 
         if not stats:
@@ -110,8 +109,8 @@ class PaperFilteringApp:
             return
 
         # Load relevant and irrelevant papers
-        relevant_df = self.data_loader.load_csv_data(self.config['RESULTS_RELEVANT_DATASET_PATH'])
-        irrelevant_df = self.data_loader.load_csv_data(self.config['RESULTS_IRRELEVANT_DATASET_PATH'])
+        relevant_df   = self.data_loader.load_xlsx_data(self.config['RESULTS_RELEVANT_DATASET_PATH'])
+        irrelevant_df = self.data_loader.load_xlsx_data(self.config['RESULTS_IRRELEVANT_DATASET_PATH'])
 
         self.pipeline.plot_statistics(relevant_df, irrelevant_df, stats, '../results/plots')
 
@@ -122,7 +121,10 @@ def main():
     app = PaperFilteringApp(
         '../config.yaml'
     )
+
     app.run()
+
+    # app.show_statistics()
 
 if __name__ == "__main__":
     main()

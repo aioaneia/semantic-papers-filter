@@ -421,3 +421,89 @@ class StatsVisualizer:
         output_file = os.path.join(output_dir, 'irrelevant_papers_by_reasoning.png')
         fig.write_image(output_file)
         fig.show()
+
+
+    @staticmethod
+    def plot_method_types_over_time(relevant_df: pd.DataFrame, output_dir: str):
+        """
+        Plot the trend of method types (text_mining, computer_vision, both, other) over time.
+        """
+        # Group by year and method type, count occurrences
+        method_trends = (relevant_df.groupby(['Publication Year', 'Method Type'])
+                         .size()
+                         .reset_index(name='count'))
+
+        # Create line plot with plotly
+        fig = px.line(
+            method_trends,
+            x='Publication Year',
+            y='count',
+            color='Method Type',
+            markers=True,
+            labels={
+                'Publication Year': 'Publication Year',
+                'count': 'Number of Papers',
+                'Method Type': 'Method Type'
+            },
+            title='Trend of Method Types Over Time',
+            color_discrete_map={
+                'text_mining': '#2ecc71',  # Green
+                'computer_vision': '#e74c3c',  # Red
+                'both': '#9b59b6',  # Purple
+                'other': '#3498db'  # Blue
+            }
+        )
+
+        # Update layout
+        fig.update_layout(
+            xaxis_title='Publication Year',
+            yaxis_title='Number of Papers',
+            legend_title='Method Type',
+            title={
+                'x': 0.5,
+                'xanchor': 'center',
+                'font': {'size': 24}
+            },
+            xaxis={
+                'dtick': 1,
+                'tickmode': 'linear',
+                'tickformat': 'd',
+                'tickangle': -45
+            },
+            legend={
+                'orientation': 'h',
+                'yanchor': 'bottom',
+                'y': 1.02,
+                'xanchor': 'right',
+                'x': 1
+            },
+            showlegend=True,
+            template='plotly_white'
+        )
+
+        # Add hover template
+        fig.update_traces(
+            hovertemplate="<br>".join([
+                "Year: %{x}",
+                "Papers: %{y}",
+                "Method: %{legendgroup}"
+            ])
+        )
+
+        # Optional: Add trend lines
+        for method_type in relevant_df['Method Type'].unique():
+            method_data = method_trends[method_trends['Method Type'] == method_type]
+
+            if len(method_data) > 1:  # Need at least 2 points for a trend line
+                fig.add_traces(
+                    px.scatter(
+                        method_data,
+                        x='Publication Year',
+                        y='count',
+                        trendline="lowess",
+                        trendline_color_override="rgba(0,0,0,0.3)"
+                    ).data
+                )
+
+        fig.write_image(os.path.join(output_dir, 'method_types_over_time.png'))
+        fig.show()
