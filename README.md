@@ -1,5 +1,5 @@
 
-# Semantic NLP Filter for Deep Learning Papers in Virology/Epidemiology
+# Semantic NLP Filter for Deep Learning Papers in Virology and Epidemiology
 
 ## Task Overview
 This solution implements semantic NLP filtering to identify academic papers from PubMed (11,450 records) 
@@ -8,7 +8,7 @@ classifying them by method type and extracting the specific methods used.
 
 ### Core Requirements Met:
 ✓ Semantic NLP filtering implementation  
-✓ Method type classification: ["text mining", "computer vision", "both", "other"]  
+✓ Method type classification: `text mining`, `computer vision`, `both`, `other` 
 ✓ Method name extraction  
 ✓ Lightweight solution suitable for personal computers  
 
@@ -25,14 +25,14 @@ We implemented a lightweight, rule-based NLP approach using spaCy that combines:
 2. **Contextual Filtering**
    - Medical context analysis to exclude irrelevant papers
    - Deep learning context verification
-   - Domain-specific validation (virology/epidemiology focus)
+   - Domain-specific validation (virology and epidemiology focus)
 
 3. **Method Classification**
    - Rule-based classification system
    - Named Entity Recognition (NER) for method extraction
    - Context-aware categorization
 
-### Why More Effective Than Keywords-Based Filtering
+### More Effective Than Keyword-Based Filtering
 Our approach surpasses traditional keyword filtering in several key aspects:
 
 | **Feature**               | **Our Approach**                          | **Keyword-Based**            |
@@ -163,7 +163,7 @@ We conducted a comprehensive evaluation comparing our rule-based approach agains
 1. Semantic similarity using sentence transformers
 2. Small language model (Llama 3.2) running locally
 
-The evaluation used a carefully curated test set of 50 papers with human-annotated labels 
+For the evaluation has been used a curated test set of 50 papers with human-annotated labels 
 covering diverse cases in virology and epidemiology research (`data/test_collection_with_abstracts_and_labels.csv`).
 
 ### Quantitative Results
@@ -194,7 +194,7 @@ covering diverse cases in virology and epidemiology research (`data/test_collect
    - ✗ Slower processing
    - ✗ Less predictable behavior
 
-For testing the LLM-based semantic filter, install Ollama locally: https://ollama.com/
+For testing Large Language Models (LLMs) for semantic filtering, install Ollama locally: https://ollama.com/
 Install the Llama 3.2 library:
 ```bash
   ollama run llama3.2:3b
@@ -238,28 +238,46 @@ Testing both rule-based and LLM approaches revealed complementary strengths:
 
 ## Visualization of the Results
 
-### Method Type Percentages
+### Method Type Percentages 
 ![Method Type Percentages](results/plots/method_type_percentages.png)
 
-### Method Type Distribution over Time
-![Method Types Over Time](results/plots/method_types_over_time.png)
 
 ### Top Method Names Over Time
 ![Method Names Over Time](results/plots/method_names_over_time.png)
 
+The temporal analysis reveals several key trends:
+1. Early Phase (1993-2012)
+   - Dominated by traditional neural networks
+   - Limited adoption in medical domains
+
+2. Growth Phase (2013-2018)
+   - Introduction of deep learning frameworks
+   - Steady increase in machine learning applications
+
+3. Recent Developments (2019-2024)
+   - Sharp rise in deep learning applications
+   - Emergence of specialized architectures (GAN, LSTM)
+   - Integration of transformer-based models
+   - Peak in neural network and deep learning papers (2022-2023)
+
+
 ### Distribution of Irrelevant Papers
 ![Irrelevant Papers Distribution](results/plots/irrelevant_papers_by_reasoning.png)
+
 
 ### Word Cloud of Method Names
 ![Method Names Word Cloud](results/plots/word_cloud_method_name.png)
 
-## Distribution of Journals over Time
+
+### Distribution of Journals Over Time
 ![Journal Distribution Over Time](results/plots/publication_distribution_per_journal.png)
 
-## Publications per Journal over Time
+
+### Publications per Journal Over Time
 ![Publications per Journal Over Time](results/plots/publications_per_journal_over_time.png)
 
-## Comparison of Top Journals in Relevant and Irrelevant Papers
+
+### Comparison of Top Journals in Relevant and Irrelevant Papers
 ![Top Journals Comparison](results/plots/journal_comparison.png)
 
 
