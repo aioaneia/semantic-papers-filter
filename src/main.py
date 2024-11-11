@@ -1,4 +1,4 @@
-
+import json
 import os
 import logging
 
@@ -38,8 +38,10 @@ class PaperFilteringApp:
             self.config['TRANSFORMER_MODEL']
         )
 
+        self.data_loader = DataLoader()
+
         self.pipeline = Pipeline(
-            data_loader=DataLoader(),
+            data_loader=self.data_loader,
             preprocessor=Preprocessor(),
             semantic_filter=self.semantic_filter,
             visualizer=StatsVisualizer()
@@ -96,10 +98,26 @@ class PaperFilteringApp:
             dir_path.mkdir(parents=True, exist_ok=True)
 
 
+    def show_statistics(self):
+        """
+        Show statistics from the processed results.
+        """
+        with open('../results/stats/nlp_statistics.json', 'r') as f:
+            stats = json.load(f)
+
+        if not stats:
+            self.logger.error("No statistics generated. Please run the pipeline first.")
+            return
+
+        # Load relevant and irrelevant papers
+        relevant_df = self.data_loader.load_csv_data(self.config['RESULTS_RELEVANT_DATASET_PATH'])
+        irrelevant_df = self.data_loader.load_csv_data(self.config['RESULTS_IRRELEVANT_DATASET_PATH'])
+
+        self.pipeline.plot_statistics(relevant_df, irrelevant_df, stats, '../results/plots')
+
 def main():
     """
-    Main entry point for the application script to run the pipeline and process papers from the dataset file.
-    the configuration file is loaded and the pipeline is initialized with the necessary components.
+    Main entry point for the application script to run the pipeline.
     """
     app = PaperFilteringApp(
         '../config.yaml'

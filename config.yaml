@@ -13,6 +13,10 @@ TEST_DATASET_PATH: ../../data/test_collection_with_abstracts_and_labels.xlsx
 # Evaluation dataset path
 EVALUATION_DATASET_PATH: ../../data/eval_collection_with_abstracts.xlsx
 
+# Results dataset paths
+RESULTS_RELEVANT_DATASET_PATH: ../data/files/relevant_papers.xlsx
+RESULTS_IRRELEVANT_DATASET_PATH: ../data/files/filtered_out_papers.xlsx
+
 # Model hyperparameters
 SPACY_MODEL: en_core_web_lg
 

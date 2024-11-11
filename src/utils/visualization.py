@@ -36,7 +36,8 @@ class StatsVisualizer:
             title={'x': 0.5},
         )
 
-        fig.write_html(os.path.join(output_dir, 'method_type_percentages.html'))
+        fig.write_image(os.path.join(output_dir, 'method_type_percentages.png'))
+
         fig.show()
 
 
@@ -81,6 +82,7 @@ class StatsVisualizer:
             )
 
             fig.write_image(os.path.join(output_dir, 'method_trends_over_time.png'))
+
             fig.show()
         else:
             print("No method data available to plot trends.")
